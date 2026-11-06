@@ -1,0 +1,50 @@
+[
+  {
+    "file": "posters/poster-qr.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "decoded": [
+      "https://Lynch715.github.io/dongda-construction-sim/"
+    ]
+  },
+  {
+    "file": "posters/poster-qr-hd.png",
+    "size": [
+      2160,
+      3840
+    ],
+    "decoded": [
+      "https://Lynch715.github.io/dongda-construction-sim/"
+    ]
+  },
+  {
+    "file": "posters/poster.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "decoded": []
+  },
+  {
+    "file": "posters/poster-hd.png",
+    "size": [
+      2160,
+      3840
+    ],
+    "decoded": []
+  },
+  {
+    "resizedWidth": 768,
+    "decoded": [
+      "https://Lynch715.github.io/dongda-construction-sim/"
+    ]
+  },
+  {
+    "resizedWidth": 512,
+    "decoded": [
+      "https://Lynch715.github.io/dongda-construction-sim/"
+    ]
+  }
+]

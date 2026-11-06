@@ -55,3 +55,5 @@ npm run posters
 ## 发布方式
 
 GitHub Pages 从 **main 分支根目录**发布。分享预览 `og:image` 指向无二维码的 `posters/poster.png`，favicon 为橙色塔吊与建筑剪影。微信等平台的预览呈现和裁切以平台规则为准。
+
+首次发布已完成应用内浏览器及 Playwright 验收：[检查记录与桌面、手机截图](docs/验收记录.md)。安装出图开发工具后，可执行 `node scripts/check-live.cjs` 复查线上开局、存档、布局、控制台及分享资源。

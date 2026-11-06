@@ -1,0 +1,178 @@
+[
+  {
+    "filename": "poster-qr.png",
+    "width": 1080,
+    "height": 1920,
+    "check": {
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "fonts": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "900",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "600",
+          "status": "unloaded"
+        }
+      ],
+      "textOverflow": []
+    },
+    "errors": []
+  },
+  {
+    "filename": "poster.png",
+    "width": 1080,
+    "height": 1920,
+    "check": {
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "fonts": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "900",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "600",
+          "status": "unloaded"
+        }
+      ],
+      "textOverflow": []
+    },
+    "errors": []
+  },
+  {
+    "filename": "poster-qr-hd.png",
+    "width": 2160,
+    "height": 3840,
+    "check": {
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "fonts": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "900",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "600",
+          "status": "unloaded"
+        }
+      ],
+      "textOverflow": []
+    },
+    "errors": []
+  },
+  {
+    "filename": "poster-hd.png",
+    "width": 2160,
+    "height": 3840,
+    "check": {
+      "width": 1080,
+      "height": 1920,
+      "images": true,
+      "fonts": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "900",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "400",
+          "status": "loaded"
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": "600",
+          "status": "unloaded"
+        }
+      ],
+      "textOverflow": []
+    },
+    "errors": []
+  }
+]
