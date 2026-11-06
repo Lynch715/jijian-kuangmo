@@ -39,10 +39,25 @@ const path = require('node:path');
     if (before !== after) throw new Error(`${name}: 存档未保持`);
     const save = JSON.parse(after);
     const pages = [];
+    let mobileSave;
     for (const tab of ['map', 'corp', 'honor', 'save', 'ops']) {
       let selector = name === 'desktop' ? `.side [data-tab="${tab}"]` : tab === 'save' ? '.m-save' : `.mbar [data-tab="${tab}"]`;
       await page.locator(selector).click();
       pages.push(await page.evaluate(tab => ({ tab, viewport: innerWidth, scrollWidth: document.documentElement.scrollWidth }), tab));
+      if (name === 'iphone13' && tab === 'save') {
+        const back = page.getByRole('button', { name: '← 返回', exact: true });
+        const credit = page.locator('#tab-save .credit');
+        mobileSave = { backVisible: await back.isVisible(), credit: (await credit.innerText()).replace(/\s+/g, ' ').trim() };
+        if (!mobileSave.backVisible || !/制作人 大老师.*微信 lynchrrr/.test(mobileSave.credit)) throw new Error('手机存档页缺少返回或制作人信息');
+        await back.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: path.join(out, 'iphone13-save-top.png') });
+        await credit.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: path.join(out, 'iphone13-save-bottom.png') });
+        await page.locator('#tab-save').screenshot({ path: path.join(out, 'iphone13-save-page.png') });
+        await back.click();
+        mobileSave.backWorks = await page.locator('#tab-honor').isVisible();
+        if (!mobileSave.backWorks) throw new Error('存档页返回未回到上一个页面');
+      }
     }
     await page.evaluate(() => { window.scrollTo(0, 0); });
     await page.evaluate(() => document.fonts.ready);
@@ -51,6 +66,8 @@ const path = require('node:path');
       doctype: document.doctype?.name,
       language: document.documentElement.lang,
       viewport: document.querySelector('meta[name="viewport"]')?.content,
+      viewportCount: document.querySelectorAll('meta[name="viewport"]').length,
+      viewportInHead: document.head.contains(document.querySelector('meta[name="viewport"]')),
       title: document.title,
       ogTitle: document.querySelector('meta[property="og:title"]')?.content,
       ogDescription: document.querySelector('meta[property="og:description"]')?.content,
@@ -62,11 +79,11 @@ const path = require('node:path');
       const r = await context.request.get(url);
       assets.push({ url, status: r.status(), type: r.headers()['content-type'] });
     }
-    const check = { name, viewport: options.viewport, status: response.status(), newGame: true, advancedMonths: save.t, savePreserved: before === after, pages, metadata, assets, errors, failedResponses, failedRequests, dialogs };
+    const check = { name, viewport: options.viewport, status: response.status(), newGame: true, advancedMonths: save.t, savePreserved: before === after, mobileSave, pages, metadata, assets, errors, failedResponses, failedRequests, dialogs };
     report.checks.push(check);
     console.log(JSON.stringify(check));
     await context.close();
-    if (response.status() !== 200 || !metadata.title.startsWith('基建狂魔') || metadata.ogTitle !== '基建狂魔' || metadata.ogDescription !== '从一支施工队，到特级资质、上市公司' || !metadata.ogImage.includes('/jijian-kuangmo/') || save.t !== 3 || errors.length || failedResponses.length || failedRequests.length || pages.some(p => p.scrollWidth > p.viewport) || assets.some(a => a.status !== 200)) throw new Error(`${name}: 线上检查未全部通过`);
+    if (response.status() !== 200 || metadata.viewportCount !== 1 || !metadata.viewportInHead || metadata.viewport !== 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover' || !metadata.title.startsWith('基建狂魔') || metadata.ogTitle !== '基建狂魔' || metadata.ogDescription !== '从一支施工队，到特级资质、上市公司' || !metadata.ogImage.includes('/jijian-kuangmo/') || save.t !== 3 || errors.length || failedResponses.length || failedRequests.length || pages.some(p => p.scrollWidth > p.viewport) || assets.some(a => a.status !== 200)) throw new Error(`${name}: 线上检查未全部通过`);
   }
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
   await browser.close();

@@ -2,7 +2,6 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#D9530E">
 <meta name="theme-color" content="#FF7A2E" media="(prefers-color-scheme: dark)">
 <meta name="description" content="从一支施工队，到特级资质、上市公司">
@@ -18,6 +17,7 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>基建狂魔</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
@@ -116,6 +116,17 @@ h3{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.06em;margin
 .row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}
 .row:last-child{border-bottom:0}
 .row .grow{flex:1;min-width:0}
+.pm{padding:10px 0;border-bottom:1px solid var(--line)}.pm:last-child{border-bottom:0}
+.pm-h{display:flex;align-items:center;gap:8px;min-height:28px}.pm-h b{font-size:14px;white-space:nowrap}
+.pm-st{margin-left:auto;display:flex;gap:6px;align-items:center;min-width:0}.pm-pj{max-width:11em;overflow:hidden;text-overflow:ellipsis;display:block}
+.pm-m{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;margin-top:5px;font-size:12px;color:var(--muted)}.pm-m .num{color:var(--ink);font-weight:600}
+.pmbar{display:inline-block;width:79px;height:7px;position:relative;background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 8px)}
+.pmbar i{position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,var(--accent) 0 7px,transparent 7px 8px)}
+.pm-d{font-size:12px;color:var(--muted);margin-top:3px}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
+.sv-top{grid-column:1/-1;display:flex;align-items:center;gap:10px}.sv-top b{font-family:var(--f-display);font-size:18px}
+.credit{grid-column:1/-1;text-align:center;padding:22px 0 8px;font-size:12px;color:var(--muted);letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;gap:6px}
+.credit b{color:var(--ink);font-weight:700}.credit .num{color:var(--ink)}
 .sk{font-family:var(--f-mono);font-size:11px;letter-spacing:-1px;color:var(--accent)}
 .log{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto;font-size:12.5px}
 .log li{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
@@ -180,9 +191,9 @@ svg.map .compass{stroke:var(--muted);stroke-width:1;fill:none}
 .ach b{display:block;font-size:13px}.ach span{display:block;font-size:11px;color:var(--muted)}
 .ach .bar{margin-top:6px;min-width:0}
 .ach>div.got b::before{content:"★ ";color:var(--accent)}
-.tl{list-style:none;margin:0 0 0 6px;padding:0;border-left:2px solid var(--line);max-height:460px;overflow:auto}
-.tl li{position:relative;padding:3px 0 10px 16px;font-size:13px}
-.tl li::before{content:"";position:absolute;left:-7px;top:8px;width:8px;height:8px;background:var(--panel);border:2px solid var(--accent)}
+.tl{list-style:none;margin:0;padding:0 0 0 8px;max-height:460px;overflow:auto}
+.tl li{position:relative;padding:3px 0 10px 16px;font-size:13px;border-left:2px solid var(--line)}
+.tl li::before{content:"";position:absolute;left:-7px;top:6px;width:8px;height:8px;background:var(--panel);border:2px solid var(--accent)}
 .tl time{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:block}
 .ladder .row.cur{background:var(--sunk);font-weight:700}
 .tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
@@ -516,10 +527,12 @@ body{background-image:linear-gradient(var(--gridl) 1px,transparent 1px),linear-g
     <section class="panel"><h2>公司大事记</h2><div class="body" id="chron"></div></section></div>
   </main>
   <main class="grid2" id="tab-save" hidden>
+    <div class="sv-top"><button class="btn sm ghost" data-act="svback">← 返回</button><b>存档</b></div>
     <div class="col"><section class="panel"><h2>存档<small>存在本机浏览器中</small></h2><div class="body" id="slots"></div></section></div>
     <div class="col"><section class="panel"><h2>公司名称</h2><div class="body" id="rename"></div></section>
     <section class="panel"><h2>新开一局</h2><div class="body"><p class="mut" style="margin:0 0 10px">换一种出身或难度，从头经营。当前进度会保留在自动存档里，直到新的一局开始后被覆盖；想留住它，先存到上面的存档位。</p><button class="btn primary" data-act="new">新开一局</button></div></section>
     <section class="panel"><h2>备份与迁移</h2><div class="body" id="backup"></div></section></div>
+      <div class="credit"><span>制作人 <b>大老师</b></span><span>微信 <span class="num">lynchrrr</span> <button class="btn sm ghost" data-act="wxcopy">复制</button></span></div>
   </main>
   <main class="grid2" id="tab-honor" hidden>
     <div class="col"><section class="panel"><h2>城市重大项目规划<small>提前准备资质、信用和项目经理</small></h2><div class="body" id="pipe"></div></section>
@@ -1120,7 +1133,9 @@ function act(a,b){
   if(a==='tutgo'){UI.tab=b.dataset.tab;render();window.scrollTo(0,0);return;}
   if(a==='settut'){UI.setup.tut=!UI.setup.tut;renderModal();return;}
   if(a==='setload'){S.queue=S.queue.filter(q=>q.type!=='setup');UI.tab='save';render();return;}
-  if(a==='tab'){UI.tab=b.dataset.tab;render();window.scrollTo(0,0);return;}
+  if(a==='svback'){UI.tab=UI.prevTab&&UI.prevTab!=='save'?UI.prevTab:'ops';render();window.scrollTo(0,0);return;}
+  if(a==='wxcopy'){try{navigator.clipboard.writeText('lynchrrr').then(()=>toast('微信号已复制','good'),()=>toast('微信号：lynchrrr','info'));}catch(e){toast('微信号：lynchrrr','info');}return;}
+  if(a==='tab'){if(UI.tab!=='save')UI.prevTab=UI.tab;UI.tab=b.dataset.tab;render();window.scrollTo(0,0);return;}
   if(a==='reg'){UI.reg=b.dataset.id;render();return;}
   if(a==='tf'){UI.tf=b.dataset.v;render();return;}
   if(a==='openreg'){const k=b.dataset.id,RG=REG[k];if(!RG||S.regions[k]!=null||lvMax()<RG.need||S.cash<RG.fee)return;
@@ -1317,9 +1332,11 @@ function renderBank(){
   $('#bank').innerHTML=h;
 }
 function renderPMs(){
-  let h='<div class="rows">'+S.pms.map(p=>{const pr=S.projects.find(x=>x.id===p.busy);const st=p.busy==='bid'?'<span class="chip warn">投标中</span>':pr?`<span class="chip">${esc(pr.name.slice(0,10))}</span>`:'<span class="chip good">空闲</span>';
-    return `<div class="row"><span class="grow"><b>${esc(p.name)}</b> <span class="sk">${'■'.repeat(p.skill)}${'□'.repeat(10-p.skill)}</span>${trChip(p)}<span class="sub mut">能力${p.skill} · 月薪${p.sal}万 · 完成${p.exp}项${p.tr?' · '+TRD[p.tr]:''}</span></span>${st}${p.busy==null?`<button class="btn sm ghost" data-act="fire" data-id="${p.id}">解约</button>`:''}</div>`;}).join('')+'</div>';
-  h+=`<h3>人才市场 · ${S.t%3===0?'本月':''}每季度刷新</h3><div class="rows">`+(S.pmMarket.length?S.pmMarket.map(c=>`<div class="row"><span class="grow">${esc(c.name)} <span class="sk">${'■'.repeat(c.skill)}${'□'.repeat(10-c.skill)}</span>${trChip(c)}<span class="sub mut">能力${c.skill} · 月薪${c.sal}万${c.tr?' · '+TRD[c.tr]:''}</span></span><button class="btn sm" data-act="hire" data-id="${c.id}" ${S.cash<c.sal*3?'disabled':''}>签约 ${fmt(c.sal*3)}</button></div>`).join(''):'<div class="empty">本季度候选人已签完。</div>')+'</div>';
+  const bar=k=>`<span class="pmbar" aria-label="能力${k}"><i style="width:${k*10}%"></i></span>`;
+  const card=(p,right,meta)=>`<div class="pm"><div class="pm-h"><b>${esc(p.name)}</b>${trChip(p)}<span class="pm-st">${right}</span></div><div class="pm-m">${bar(p.skill)}<span class="num">能力 ${p.skill}</span>${meta}</div>${p.tr?`<div class="pm-d">${TRD[p.tr]}</div>`:''}</div>`;
+  let h='<div class="pms">'+S.pms.map(p=>{const pr=S.projects.find(x=>x.id===p.busy);const st=p.busy==='bid'?'<span class="chip warn">投标中</span>':pr?`<span class="chip pm-pj">${esc(pr.name)}</span>`:'<span class="chip good">空闲</span>';
+    return card(p,st+(p.busy==null?`<button class="btn sm ghost" data-act="fire" data-id="${p.id}">解约</button>`:''),`<span>月薪 ${p.sal}万</span><span>完成 ${p.exp} 项</span>`);}).join('')+'</div>';
+  h+=`<h3>人才市场 · ${S.t%3===0?'本月':''}每季度刷新</h3><div class="pms">`+(S.pmMarket.length?S.pmMarket.map(c=>card(c,`<button class="btn sm" data-act="hire" data-id="${c.id}" ${S.cash<c.sal*3?'disabled':''}>签约 ${fmt(c.sal*3)}</button>`,`<span>月薪 ${c.sal}万</span>`)).join(''):'<div class="empty">本季度候选人已签完。</div>')+'</div>';
   $('#pms').innerHTML=h;
 }
 function renderLog(){$('#log').innerHTML=S.log.slice(0,60).map(l=>`<li><time>${ymS(l.t)}</time><span class="${l.k}">${esc(l.x)}</span></li>`).join('');}
@@ -1812,7 +1829,8 @@ function migrate(o){if(!o||![1,2,3,4,5].includes(o.v))return null;if(o.v===1){S=
 function load(){try{const r=localStorage.getItem(KEY);if(r)return migrate(JSON.parse(r));}catch(e){}return null;}
 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;act(b.dataset.act,b);});
-document.addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('g[data-act]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();act(b.dataset.act,b);}});
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1)e.preventDefault();},{passive:false});
+addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('g[data-act]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();act(b.dataset.act,b);}});
 document.addEventListener('input',e=>{if(e.target.id==='bid-ratio'){UI.ratio=+e.target.value;updateBid();}if(e.target.id==='set-cn'||e.target.id==='rn-cn'){const f=$(e.target.id==='set-cn'?'#set-cnf':'#rn-cnf');if(e.target.id==='set-cn')UI.setup.cn=e.target.value;if(f)f.textContent=cnFull(e.target.value);const mm=$(e.target.id==='set-cn'?'#set-cnm':'#rn-msg');if(mm)mm.textContent='';}});
 document.addEventListener('change',e=>{
   if(e.target.id==='bid-pm'){UI.pm=+e.target.value||null;updateBid();}
