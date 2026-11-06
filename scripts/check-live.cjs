@@ -20,8 +20,19 @@ const path = require('node:path');
     page.on('response', r => { if (r.status() >= 400) failedResponses.push({ url: r.url(), status: r.status() }); });
     page.on('requestfailed', r => failedRequests.push({ url: r.url(), error: r.failure()?.errorText }));
     const response = await page.goto(base, { waitUntil: 'networkidle' });
+    await page.locator('[data-act="setbg"][data-v="pri"]').click();
+    await page.locator('[data-act="setdk"][data-v="std"]').click();
     await page.getByRole('button', { name: /开启新手引导/ }).click();
     await page.getByRole('button', { name: '开始经营', exact: true }).click();
+    const initial = await page.evaluate(() => {
+      const state = JSON.parse(localStorage.getItem('dongda-mvp-v1'));
+      return { background: state.bg, difficulty: state.dk, cash: state.cash, projects: state.projects.length,
+        cashText: document.querySelector('#kpis .kpi')?.innerText,
+        projectsText: document.querySelector('#projects')?.innerText };
+    });
+    if (initial.background !== 'pri' || initial.difficulty !== 'std' || initial.cash !== 900 || initial.projects !== 0 || !initial.cashText.includes('900万') || !initial.projectsText.includes('没有在建项目')) throw new Error('民营起家初始状态不正确：' + JSON.stringify(initial));
+    await page.locator('#projects').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(out, `${name}-private-start.png`) });
     const monthButton = name === 'desktop' ? '.side [data-act="adv"]' : '.mbar [data-act="adv"]';
     const dialogs = [];
     for (let i = 0; i < 3; i++) {
@@ -79,7 +90,7 @@ const path = require('node:path');
       const r = await context.request.get(url);
       assets.push({ url, status: r.status(), type: r.headers()['content-type'] });
     }
-    const check = { name, viewport: options.viewport, status: response.status(), newGame: true, advancedMonths: save.t, savePreserved: before === after, mobileSave, pages, metadata, assets, errors, failedResponses, failedRequests, dialogs };
+    const check = { name, viewport: options.viewport, status: response.status(), newGame: true, initial, advancedMonths: save.t, savePreserved: before === after, mobileSave, pages, metadata, assets, errors, failedResponses, failedRequests, dialogs };
     report.checks.push(check);
     console.log(JSON.stringify(check));
     await context.close();

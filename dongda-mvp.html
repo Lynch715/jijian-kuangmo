@@ -602,9 +602,9 @@ const SUBS={
   design:{n:'建筑设计研究院',d:'技术标加分，中标率提升 0.3%/级',cost:[500,1500,4000],need:[1,2,3],ovh:[6,12,22],pf:l=>12*l},
   prefab:{n:'装配式构件厂',d:'房建成本 -0.6%/级，安全风险降低，免疫双碳新规',cost:[800,2000,5000],need:[1,2,3],ovh:[6,12,24],pf:l=>16*l*S.market/100}};
 const BGS={
-  pri:{n:'民营起家',d:'800万现金、房建三级、两名项目经理。白手起家，标准开局。'},
-  soe:{n:'国企改制',d:'1500万现金、房建二级、业绩6000万（4项）、信用75。人员包袱重：每月管理费+8万，项目经理工资高15%。'},
-  gk:{n:'挂靠转正',d:'只有500万现金、房建三级、信用60。但带着两名老练的项目经理（能力7和8，商务关系），开发商项目更多。'}};
+  pri:{n:'民营起家',d:'900万现金、房建三级、两名项目经理。白手起家，标准开局。'},
+  soe:{n:'国企改制',d:'1500万现金、房建二级、业绩6000万（4项）、信用75。人员包袱重：每月管理费+8万，项目经理工资高15%。另带一个改制前承接的在建项目。'},
+  gk:{n:'挂靠转正',d:'只有600万现金、房建三级、信用60。但带着两名老练的项目经理（能力7和8，商务关系），开发商项目更多。'}};
 const DIFS={
   easy:{n:'宽松',d:'对手报价保守，开局资金和银行授信更充裕，意外风险更少',mk:.03,cash:1.5,credit:1.5,risk:.7},
   std:{n:'标准',d:'市场环境正常，竞争适中',mk:0,cash:1,credit:1,risk:1},
@@ -828,7 +828,7 @@ function bidCalc(T,ratio,pmId){const pm=pmOf(pmId);const sk=pm?pm.skill:3;const 
 function recordHist(){if(S.t>=6&&S.hist){const r=natRank(rev12());S.bestRank=Math.min(S.bestRank||1e9,r);}S.hist.push({rev:S.mRev||0,prof:S.mProf||0,val:valuation(),t:S.t,cash:S.cash,loan:S.loan,net:net(),recv:recvSum(),mat:S.mat,market:S.market,rep:S.rep,bl:backlog()});if(S.hist.length>120)S.hist.shift();}
 
 function newGame(bg,dk,era,cn){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now';const D=DIFS[dk],E=ERAS[era];
-  S={v:5,regions:{home:0},ms:{},chron:[],awards:[],lms:[],pipe:[],lmCount:{},years:[],ipo:null,ach:{},maxV:900,regPerf:{home:1200},yMin:100,mRev:0,mProf:0,mq:-1,mPerfSum:0,mPerfCount:0,bg,dk,ppps:[],rivals:[],deadRiv:[],t:0,cash:Math.round((bg==='soe'?1500:bg==='gk'?500:800)*D.cash),loan:0,rep:bg==='soe'?75:bg==='gk'?60:70,qual:bg==='soe'?1:0,market:100,mat:100,uid:1,pms:[],tenders:[],bids:[],projects:[],recv:[],props:[],suits:[],
+  S={v:5,regions:{home:0},ms:{},chron:[],awards:[],lms:[],pipe:[],lmCount:{},years:[],ipo:null,ach:{},maxV:900,regPerf:{home:1200},yMin:100,mRev:0,mProf:0,mq:-1,mPerfSum:0,mPerfCount:0,bg,dk,ppps:[],rivals:[],deadRiv:[],t:0,cash:Math.round((bg==='soe'?1500:bg==='gk'?600:900)*D.cash),loan:0,rep:bg==='soe'?75:bg==='gk'?60:70,qual:bg==='soe'?1:0,market:100,mat:100,uid:1,pms:[],tenders:[],bids:[],projects:[],recv:[],props:[],suits:[],
     perfSum:bg==='soe'?6000:1200,perfCount:bg==='soe'?4:1,hist:[],log:[],queue:[],pmMarket:[],devs:[],deadDev:[],year:{rev:0,cost:0,ovh:0,int:0,other:0,signed:0,sub:0},macro:[],subs:{},subInv:0,
     over:false,won:false,doneList:[{name:bg==='soe'?'改制前承建项目（4项）':'公司成立前业绩（3项）',V:bg==='soe'?6000:1200,t:-1}]};
   S.cn=cleanCN(cn)||'东大建筑';S.regPerf.home=S.perfSum;S.tut={seen:{},off:false};S.goalStreak=0;S.year.acc=0;setGoal();S.certs=[{line:'fj',lv:S.qual,t:0,no:certNo('fj',S.qual,0)}];
@@ -836,9 +836,9 @@ function newGame(bg,dk,era,cn){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now'
   let a,b;
   if(bg==='gk'){a=newPM(7,7);b=newPM(8,8);a.tr='biz';b.tr='biz';}else{a=newPM(6,6);b=newPM(4,4);}
   S.pms.push(a,b);if(bg==='soe'){const c=newPM(7,7);S.pms.push(c);for(const m of S.pms)m.sal=+(m.sal*1.15).toFixed(1);}
-  const p={id:S.uid++,reg:'home',line:'fj',name:'东城社区服务中心',ck:'gov',dev:null,V:900,C:774,dur:6,done:2,elapsed:2,pm:a.id,cost:258,billed:300,claimed:240,advLeft:0,stopFor:0};
+  if(bg==='soe'){const p={id:S.uid++,reg:'home',line:'fj',name:'东城社区服务中心',ck:'gov',dev:null,V:900,C:774,dur:6,done:2,elapsed:2,pm:a.id,cost:258,billed:300,claimed:240,advLeft:0,stopFor:0};
   a.busy=p.id;S.projects.push(p);
-  S.recv.push({id:S.uid++,reg:'home',pid:p.id,name:p.name,ck:'gov',dev:null,amount:120,due:0},{id:S.uid++,reg:'home',pid:p.id,name:p.name,ck:'gov',dev:null,amount:120,due:1});
+  S.recv.push({id:S.uid++,reg:'home',pid:p.id,name:p.name,ck:'gov',dev:null,amount:120,due:0},{id:S.uid++,reg:'home',pid:p.id,name:p.name,ck:'gov',dev:null,amount:120,due:1});}
   initRivals();
   for(let i=0;i<4;i++)S.tenders.push(genTender('home'));
   if(!S.tenders.some(t=>t.needQ===0))S.tenders[0]=genTender('home');
@@ -847,7 +847,7 @@ function newGame(bg,dk,era,cn){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now'
   lmFill();if(era!=='now')chron(`时代背景：${E.n}——${E.d}`);chron(bg==='soe'?'江州市建筑工程公司完成改制，更名'+coName()+'，房建二级资质':bg==='gk'?'挂靠多年的施工队注册成立'+coName()+'，房建三级资质':''+coName()+'公司在江州成立，房建三级资质，注册资本800万');
   if(dk!=='std')chron(`难度：${D.n}`);
   recordHist();
-  log('info',`${coName()}开局：${BGS[bg].n} · ${D.n}难度。账上现金${fmt(S.cash)}，${S.pms.length}名项目经理，在建项目1个。`);
+  log('info',`${coName()}开局：${BGS[bg].n} · ${D.n}难度。账上现金${fmt(S.cash)}，${S.pms.length}名项目经理${S.projects.length?'，改制前承接的在建项目1个':''}。`);
   UI.open=null;
 }
 
