@@ -11,7 +11,12 @@ const path = require('node:path');
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   const base = process.env.GAME_URL || 'http://127.0.0.1:18765/';
   await page.goto(base, { waitUntil: 'networkidle' });
-  console.log((await page.locator('#modal').innerText()).slice(-500));
+  if (!(await page.title()).startsWith('基建狂魔')) throw new Error('不是新版游戏');
+  const out = path.join(__dirname, '../posters/assets');
+  fs.mkdirSync(out, { recursive: true });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('#modal .setup .hero').screenshot({ path: path.join(out, 'game-hero.png') });
+  await page.screenshot({ path: path.join(out, 'game-start.png'), fullPage: false });
   await page.getByRole('button', { name: /开启新手引导/ }).click();
   await page.getByRole('button', { name: '开始经营', exact: true }).click();
   async function settle() {
@@ -36,12 +41,11 @@ const path = require('node:path');
     actions.push({ month: month + 1, date: await page.locator('#s-month').innerText(), kpis: await page.locator('#kpis').innerText() });
   }
   await page.evaluate(() => document.fonts.ready);
-  const out = path.join(__dirname, '../posters/assets');
-  fs.mkdirSync(out, { recursive: true });
   await page.locator('#kpis').screenshot({ path: path.join(out, 'game-kpis.png') });
   await page.locator('#skyline').screenshot({ path: path.join(out, 'game-skyline.png') });
   await page.locator('#tenders').locator('..').screenshot({ path: path.join(out, 'game-tenders.png') });
   await page.locator('#chart').locator('..').locator('..').screenshot({ path: path.join(out, 'game-cashflow.png') });
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: path.join(out, 'game-desktop.png'), fullPage: false });
   await page.locator('.side [data-tab="map"]').click();
   await page.locator('#tab-map > .panel').screenshot({ path: path.join(out, 'game-map.png') });

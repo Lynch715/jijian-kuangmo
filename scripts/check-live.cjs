@@ -4,7 +4,7 @@ const path = require('node:path');
 
 (async () => {
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
-  const base = process.env.GAME_URL || 'https://Lynch715.github.io/dongda-construction-sim/';
+  const base = process.env.GAME_URL || 'https://lynch715.github.io/jijian-kuangmo/';
   const out = path.join(__dirname, '../output/playwright/live');
   fs.mkdirSync(out, { recursive: true });
   const report = { url: base, checks: [] };
@@ -52,6 +52,8 @@ const path = require('node:path');
       language: document.documentElement.lang,
       viewport: document.querySelector('meta[name="viewport"]')?.content,
       title: document.title,
+      ogTitle: document.querySelector('meta[property="og:title"]')?.content,
+      ogDescription: document.querySelector('meta[property="og:description"]')?.content,
       ogImage: document.querySelector('meta[property="og:image"]')?.content,
       favicon: document.querySelector('link[rel="icon"]')?.href
     }));
@@ -64,7 +66,7 @@ const path = require('node:path');
     report.checks.push(check);
     console.log(JSON.stringify(check));
     await context.close();
-    if (response.status() !== 200 || save.t !== 3 || errors.length || failedResponses.length || failedRequests.length || pages.some(p => p.scrollWidth > p.viewport) || assets.some(a => a.status !== 200)) throw new Error(`${name}: 线上检查未全部通过`);
+    if (response.status() !== 200 || !metadata.title.startsWith('基建狂魔') || metadata.ogTitle !== '基建狂魔' || metadata.ogDescription !== '从一支施工队，到特级资质、上市公司' || !metadata.ogImage.includes('/jijian-kuangmo/') || save.t !== 3 || errors.length || failedResponses.length || failedRequests.length || pages.some(p => p.scrollWidth > p.viewport) || assets.some(a => a.status !== 200)) throw new Error(`${name}: 线上检查未全部通过`);
   }
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
   await browser.close();

@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#D9530E">
 <meta name="theme-color" content="#FF7A2E" media="(prefers-color-scheme: dark)">
-<meta name="description" content="从一支施工队，到特级资质、上市公司。投标算账，守住现金流，在江州的天际线上留下你的地标。免费在线游玩，手机电脑都能玩。">
+<meta name="description" content="从一支施工队，到特级资质、上市公司">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:title" content="东大建筑经营台账">
-<meta property="og:description" content="从一支施工队，到特级资质、上市公司。投标算账，守住现金流，在江州留下你的地标。">
-<meta property="og:url" content="https://Lynch715.github.io/dongda-construction-sim/">
-<meta property="og:image" content="https://Lynch715.github.io/dongda-construction-sim/posters/poster.png">
+<meta property="og:title" content="基建狂魔">
+<meta property="og:description" content="从一支施工队，到特级资质、上市公司">
+<meta property="og:url" content="https://lynch715.github.io/jijian-kuangmo/">
+<meta property="og:image" content="https://lynch715.github.io/jijian-kuangmo/posters/poster.png">
 <meta property="og:image:width" content="1080">
 <meta property="og:image:height" content="1920">
-<meta property="og:image:alt" content="东大建筑经营台账宣传海报，展示真实游戏经营数据、天际线与市场版图">
+<meta property="og:image:alt" content="基建狂魔宣传海报，展示真实游戏开局横幅、经营数据、天际线与市场版图">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>东大建筑经营台账</title>
+<title>基建狂魔</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -215,6 +215,12 @@ svg.map .compass{stroke:var(--muted);stroke-width:1;fill:none}
 .btn,.opt{transition:background .15s,filter .15s,transform .08s}
 .side{display:none}
 .mbar{display:none}
+.s-game{display:flex;align-items:center;gap:8px;margin:0 0 14px}.s-game b{font-family:var(--f-display);font-weight:900;font-size:13px;letter-spacing:.32em;color:var(--accent);border:1.5px solid var(--accent);padding:3px 4px 3px 8px}.s-game i{flex:1;height:1px;background:currentColor;opacity:.25}
+.g-mark{display:inline-block;font-style:normal;font-family:var(--f-display);font-weight:900;font-size:10px;letter-spacing:.2em;color:var(--accent);border:1px solid var(--accent);padding:2px 2px 2px 5px;margin-right:8px;vertical-align:4px}
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:var(--sky2)}.hero svg{display:block;width:100%;height:auto}
+.hero .ht{position:absolute;left:18px;top:14px;pointer-events:none}.hero .ht b{display:block;font-family:var(--f-display);font-weight:900;font-size:40px;letter-spacing:.12em;line-height:1;color:var(--ink)}.hero .ht b em{font-style:normal;color:var(--accent)}
+.hero .ht span{display:block;margin-top:8px;font-size:13px;color:var(--muted);letter-spacing:.06em}
+@media (max-width:720px){.g-mark{display:none}.hero{display:flex;flex-direction:column;background:var(--sky1)}.hero .ht{position:static;order:-1;padding:18px 16px 0}.hero .ht b{font-size:34px}.hero .ht span{font-size:12px}}
 .s-brand{font-family:var(--f-display);font-weight:900;font-size:26px;letter-spacing:.1em;line-height:1}
 .s-brand span,.brand span{display:block;font-family:var(--f-body);font-weight:400;font-size:11px;letter-spacing:.2em;opacity:.65;margin-top:6px}
 .s-date{display:flex;align-items:baseline;gap:8px;padding:10px 12px;border:1px solid color-mix(in srgb, var(--on-chrome) 25%, transparent)}
@@ -340,6 +346,9 @@ svg.map .compass{stroke:var(--muted);stroke-width:1;fill:none}
 .slot .meta .num{color:var(--ink)}
 .slot .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .slot.empty{color:var(--muted)}
+#set-cn,#rn-cn{width:100%;font:inherit;font-size:16px;font-weight:700;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:9px 10px}
+#set-cn:focus,#rn-cn:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.js-cn{font-style:normal}.cn-in{display:flex;flex-direction:column;gap:5px}.cn-in span{font-size:12px;color:var(--muted)}.cn-in b{color:var(--ink);font-weight:600}
 #bk-text{width:100%;min-height:90px;font-family:var(--f-mono);font-size:11px;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px;resize:vertical}
 @media (max-width:720px){.m-save{display:inline-flex;align-items:center;padding:4px 8px}.m-save svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round}
   .slot{grid-template-columns:minmax(0,1fr)}.slot .acts{justify-content:flex-start}}
@@ -448,7 +457,8 @@ body{background-image:linear-gradient(var(--gridl) 1px,transparent 1px),linear-g
 <body>
 
 <aside class="side" aria-label="公司面板">
-  <div class="s-brand">东大建筑<span>江州 · 施工总承包</span></div>
+  <div class="s-game"><b>基建狂魔</b><i></i></div>
+  <div class="s-brand"><i class="js-cn">东大建筑</i><span>江州 · 施工总承包</span></div>
   <div class="s-date"><b id="s-month"></b><span id="s-year"></span></div>
   <div class="s-chips" id="s-chips"></div>
   <nav class="s-nav" aria-label="视图"><button data-act="tab" data-tab="ops"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>经营</span><em id="bd-ops"></em></button><button data-act="tab" data-tab="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z"/><path d="M12 7.5l4 2.3v4.4l-4 2.3-4-2.3V9.8z"/></svg><span>版图</span><em id="bd-map"></em></button><button data-act="tab" data-tab="corp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-5h6v5M9 10h.01M15 10h.01M9 13h.01M15 13h.01"/></svg><span>公司</span><em id="bd-corp"></em></button><button data-act="tab" data-tab="honor"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg><span>荣誉</span><em id="bd-honor"></em></button><button data-act="tab" data-tab="save"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h8V3M8 21v-7h8v7"/></svg><span>存档</span><em id="bd-save"></em></button></nav>
@@ -457,7 +467,7 @@ body{background-image:linear-gradient(var(--gridl) 1px,transparent 1px),linear-g
 </aside>
 <div class="main">
 <header class="top"><div class="wrap">
-  <div class="brand">东大建筑<span>江州 · 施工总承包</span></div>
+  <div class="brand"><em class="g-mark">基建狂魔</em><i class="js-cn">东大建筑</i><span>江州 · 施工总承包</span></div>
   <div class="date js-date"></div>
   <span class="chip q js-q"></span>
   <nav class="tabs" aria-label="视图"><button data-act="tab" data-tab="ops">经营</button><button data-act="tab" data-tab="map">版图</button><button data-act="tab" data-tab="corp">公司</button><button data-act="tab" data-tab="honor">荣誉</button><button data-act="tab" data-tab="save">存档</button></nav>
@@ -500,14 +510,15 @@ body{background-image:linear-gradient(var(--gridl) 1px,transparent 1px),linear-g
   <main class="grid2" id="tab-corp" hidden>
     <div class="col"><section class="panel"><h2>全国建筑业企业排名<small>按近12个月营收 · 全国约12.5万家</small></h2><div class="body" id="natrank"></div></section>
     <section class="panel"><h2>产业链布局<small id="subsub"></small></h2><div class="body" id="subs"></div></section>
-    <section class="panel"><h2>企业传记</h2><div class="body"><p class="mut" style="margin:0 0 10px;font-size:13px">从创立到今天，东大走过的每一步都记在这里。</p><button class="btn" data-act="bio">翻阅企业传记</button></div></section>
+    <section class="panel"><h2>企业传记</h2><div class="body"><p class="mut" style="margin:0 0 10px;font-size:13px">从创立到今天，公司走过的每一步都记在这里。</p><button class="btn" data-act="bio">翻阅企业传记</button></div></section>
     <section class="panel"><h2>企业估值与上市</h2><div class="body" id="ipo"></div></section></div>
     <div class="col"><section class="panel"><h2>历年经营</h2><div class="body" id="years"></div></section>
     <section class="panel"><h2>公司大事记</h2><div class="body" id="chron"></div></section></div>
   </main>
   <main class="grid2" id="tab-save" hidden>
     <div class="col"><section class="panel"><h2>存档<small>存在本机浏览器中</small></h2><div class="body" id="slots"></div></section></div>
-    <div class="col"><section class="panel"><h2>新开一局</h2><div class="body"><p class="mut" style="margin:0 0 10px">换一种出身或难度，从头经营。当前进度会保留在自动存档里，直到新的一局开始后被覆盖；想留住它，先存到上面的存档位。</p><button class="btn primary" data-act="new">新开一局</button></div></section>
+    <div class="col"><section class="panel"><h2>公司名称</h2><div class="body" id="rename"></div></section>
+    <section class="panel"><h2>新开一局</h2><div class="body"><p class="mut" style="margin:0 0 10px">换一种出身或难度，从头经营。当前进度会保留在自动存档里，直到新的一局开始后被覆盖；想留住它，先存到上面的存档位。</p><button class="btn primary" data-act="new">新开一局</button></div></section>
     <section class="panel"><h2>备份与迁移</h2><div class="body" id="backup"></div></section></div>
   </main>
   <main class="grid2" id="tab-honor" hidden>
@@ -822,11 +833,11 @@ function bidCalc(T,ratio,pmId){const pm=pmOf(pmId);const sk=pm?pm.skill:3;const 
 
 function recordHist(){if(S.t>=6&&S.hist){const r=natRank(rev12());S.bestRank=Math.min(S.bestRank||1e9,r);}S.hist.push({rev:S.mRev||0,prof:S.mProf||0,val:valuation(),t:S.t,cash:S.cash,loan:S.loan,net:net(),recv:recvSum(),mat:S.mat,market:S.market,rep:S.rep,bl:backlog()});if(S.hist.length>120)S.hist.shift();}
 
-function newGame(bg,dk,era){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now';const D=DIFS[dk],E=ERAS[era];
+function newGame(bg,dk,era,cn){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now';const D=DIFS[dk],E=ERAS[era];
   S={v:5,regions:{home:0},ms:{},chron:[],awards:[],lms:[],pipe:[],lmCount:{},years:[],ipo:null,ach:{},maxV:900,regPerf:{home:1200},yMin:100,mRev:0,mProf:0,mq:-1,mPerfSum:0,mPerfCount:0,bg,dk,ppps:[],rivals:[],deadRiv:[],t:0,cash:Math.round((bg==='soe'?1500:bg==='gk'?500:800)*D.cash),loan:0,rep:bg==='soe'?75:bg==='gk'?60:70,qual:bg==='soe'?1:0,market:100,mat:100,uid:1,pms:[],tenders:[],bids:[],projects:[],recv:[],props:[],suits:[],
     perfSum:bg==='soe'?6000:1200,perfCount:bg==='soe'?4:1,hist:[],log:[],queue:[],pmMarket:[],devs:[],deadDev:[],year:{rev:0,cost:0,ovh:0,int:0,other:0,signed:0,sub:0},macro:[],subs:{},subInv:0,
     over:false,won:false,doneList:[{name:bg==='soe'?'改制前承建项目（4项）':'公司成立前业绩（3项）',V:bg==='soe'?6000:1200,t:-1}]};
-  S.regPerf.home=S.perfSum;S.tut={seen:{},off:false};S.goalStreak=0;S.year.acc=0;setGoal();S.certs=[{line:'fj',lv:S.qual,t:0,no:certNo('fj',S.qual,0)}];
+  S.cn=cleanCN(cn)||'东大建筑';S.regPerf.home=S.perfSum;S.tut={seen:{},off:false};S.goalStreak=0;S.year.acc=0;setGoal();S.certs=[{line:'fj',lv:S.qual,t:0,no:certNo('fj',S.qual,0)}];
   for(let i=0;i<5;i++)S.devs.push(newDev());
   let a,b;
   if(bg==='gk'){a=newPM(7,7);b=newPM(8,8);a.tr='biz';b.tr='biz';}else{a=newPM(6,6);b=newPM(4,4);}
@@ -839,10 +850,10 @@ function newGame(bg,dk,era){bg=bg||'pri';dk=dk||'std';era=ERAS[era]?era:'now';co
   if(!S.tenders.some(t=>t.needQ===0))S.tenders[0]=genTender('home');
   S.pmMarket=[newPM(2,5),newPM(3,6),newPM(5,7)];
   S.era=era;S.y0=E.y0;S.market=E.market;S.eraSched=E.sched.map(x=>({...x}));S.hist=[];recordHist();S.goal=null;setGoal();S.certs[0].no=certNo('fj',S.qual,0);
-  lmFill();if(era!=='now')chron(`时代背景：${E.n}——${E.d}`);chron(bg==='soe'?'江州市建筑工程公司完成改制，更名东大建筑，房建二级资质':bg==='gk'?'挂靠多年的施工队注册成立东大建筑，房建三级资质':'东大建筑公司在江州成立，房建三级资质，注册资本800万');
+  lmFill();if(era!=='now')chron(`时代背景：${E.n}——${E.d}`);chron(bg==='soe'?'江州市建筑工程公司完成改制，更名'+coName()+'，房建二级资质':bg==='gk'?'挂靠多年的施工队注册成立'+coName()+'，房建三级资质':''+coName()+'公司在江州成立，房建三级资质，注册资本800万');
   if(dk!=='std')chron(`难度：${D.n}`);
   recordHist();
-  log('info',`东大建筑开局：${BGS[bg].n} · ${D.n}难度。账上现金${fmt(S.cash)}，${S.pms.length}名项目经理，在建项目1个。`);
+  log('info',`${coName()}开局：${BGS[bg].n} · ${D.n}难度。账上现金${fmt(S.cash)}，${S.pms.length}名项目经理，在建项目1个。`);
   UI.open=null;
 }
 
@@ -927,7 +938,7 @@ function complete(p){
       if(tier){const rp=[0,2,4,8][tier];S.rep+=rp;S.awards.unshift({t:S.t,name:p.name,tier,V:p.V});log('good',`「${p.name}」荣获${AWN[tier]}，信用分 +${rp}`);if(tier>=2)chron(`「${p.name}」荣获${AWN[tier]}`);}}}
   {const rk=p.reg||'home';const b0=litN(rk);S.regPerf[rk]=(S.regPerf[rk]||0)+p.V;const b1=litN(rk);
    if(b1>b0){S.newLit=S.newLit||{};S.newLit[rk]={from:b0,to:b1,t:S.t};if(MR)MR.lit.push({k:REG[rk].name,n:b1-b0,tot:b1,all:cellN(rk)});log('good',`${REG[rk].name}点亮 +${b1-b0} 格（${b1}/${cellN(rk)}）`);}}
-  if(p.lm){S.lms.unshift({t:S.t,name:p.name,V:p.V,line:p.line});S.rep+=5;chron(`地标「${p.name}」竣工交付，江州的天际线上有了东大的名字`);}
+  if(p.lm){S.lms.unshift({t:S.t,name:p.name,V:p.V,line:p.line});S.rep+=5;chron(`地标「${p.name}」竣工交付，江州的天际线上有了${coShort()}的名字`);}
   if(MR)MR.done.push({n:p.name,V:p.V,gm:(p.V-p.cost)/p.V,lm:!!p.lm,late});
   log(p.V-p.cost>=0?'good':'bad',msg);
   if(S.doneList.length>200)S.doneList.length=200;
@@ -994,7 +1005,7 @@ function advance(){
   S.yMin=Math.min(S.yMin==null?100:S.yMin,S.market);
   S.mRev=S.year.rev-y0r;S.mProf=yProf(S.year)-y0p;
   S.t++;
-  for(const x of S.tenders)if(x.expire<S.t&&x.lm){const c=(x.rivals||[]).map(rivOf).filter(Boolean);chron(`地标「${x.name}」由${c.length?pick(c).name:'外地建工集团'}承建，东大未能参与`);}
+  for(const x of S.tenders)if(x.expire<S.t&&x.lm){const c=(x.rivals||[]).map(rivOf).filter(Boolean);chron(`地标「${x.name}」由${c.length?pick(c).name:'外地建工集团'}承建，${coShort()}未能参与`);}
   S.tenders=S.tenders.filter(x=>x.expire>=S.t);
   for(const k of regsOpen()){const c=Math.round((R(.6,1.6)*REG[k].size*2.2+(S.qual>=2?.4:0))*mac('tenderMul',1)*(REG[k].ov?mac('ovBoost',1):1));for(let i=0;i<c&&S.tenders.length<16;i++)S.tenders.push(genTender(k));}
   lmTick();macroTick();
@@ -1071,7 +1082,7 @@ function act(a,b){
   if(a==='open'){const id=+b.dataset.id;UI.open=UI.open===id?null:id;{const T=S.tenders.find(x=>x.id===id);UI.ratio=T?clamp(Math.round(T.est/T.V*1.11/.005)*.005,.8,1):.92;}const T0=S.tenders.find(x=>x.id===id);const f=S.pms.filter(p=>p.busy==null&&(!T0||p.skill>=minSkill(T0))).sort((x,y)=>x.skill-y.skill)[0]||S.pms.filter(p=>p.busy==null).sort((x,y)=>y.skill-x.skill)[0];UI.pm=f?f.id:null;render();return;}
   if(a==='cancel'){UI.open=null;render();return;}
   if(a==='submit')return submitBid();
-  if(a==='hire'){const c=S.pmMarket.find(x=>x.id===+b.dataset.id);if(!c||S.cash<c.sal*3)return;S.cash-=c.sal*3;S.year.other-=c.sal*3;S.pms.push(c);S.pmMarket=S.pmMarket.filter(x=>x!==c);log('info',`签约项目经理${c.name}（能力${c.skill}），签约费 ${fmt(c.sal*3)}`);toast(`${esc(c.name)} 加入东大 · 能力 <b>${c.skill}</b>`,'good');}
+  if(a==='hire'){const c=S.pmMarket.find(x=>x.id===+b.dataset.id);if(!c||S.cash<c.sal*3)return;S.cash-=c.sal*3;S.year.other-=c.sal*3;S.pms.push(c);S.pmMarket=S.pmMarket.filter(x=>x!==c);log('info',`签约项目经理${c.name}（能力${c.skill}），签约费 ${fmt(c.sal*3)}`);toast(`${esc(c.name)} 加入${coShort()} · 能力 <b>${c.skill}</b>`,'good');}
   if(a==='fire'){const p=pmOf(+b.dataset.id);if(!p||p.busy!=null)return;S.cash-=p.sal*2;S.year.other-=p.sal*2;S.pms=S.pms.filter(x=>x!==p);log('info',`与${p.name}解约，补偿 ${fmt(p.sal*2)}`);toast(`已与${esc(p.name)}解约`,'info');}
   if(a==='up')return upgrade(b.dataset.line||'fj');
   if(a==='adv3'){let agg=null;for(let i=0;i<3;i++){if(S.over||S.queue.length)break;advance();const q=S.queue;if(q.length&&q[0].type==='month'){const r=q.shift().r;agg=agg?mergeMR(agg,r):r;}if(q.length)break;}if(agg&&!S.over)S.queue.unshift({type:'month',r:agg});render();return;}
@@ -1083,7 +1094,8 @@ function act(a,b){
   if(a==='setbg'){UI.setup.bg=b.dataset.v;renderModal();return;}
   if(a==='setdk'){UI.setup.dk=b.dataset.v;renderModal();return;}
   if(a==='setera'){UI.setup.era=b.dataset.v;renderModal();return;}
-  if(a==='setgo'){newGame(UI.setup.bg,UI.setup.dk,UI.setup.era);S.tut={seen:{},off:!UI.setup.tut};UI.tab='ops';save();render();return;}
+  if(a==='rename'){const i=$('#rn-cn'),v=cleanCN(i&&i.value),mm=$('#rn-msg');if(!v){if(mm)mm.textContent='公司名称需要 2-8 个字';return;}if(v===coName()){if(mm)mm.textContent='名称没有变化';return;}const old=coName();S.cn=v;chron(`公司由「${old}」更名为「${v}」`);log('info',`公司更名为${v}`);save();$('#rename').innerHTML='';render();toast(`已更名为 <b>${esc(v)}</b>`,'good');return;}
+  if(a==='setgo'){const ci=$('#set-cn');if(ci)UI.setup.cn=ci.value;if(UI.setup.cn&&!cleanCN(UI.setup.cn)){const sm=$('#set-cnm');if(sm)sm.textContent='公司名称需要 2-8 个字';return;}newGame(UI.setup.bg,UI.setup.dk,UI.setup.era,UI.setup.cn);S.tut={seen:{},off:!UI.setup.tut};UI.tab='ops';save();render();return;}
   if(a==='setcancel'){S.queue=S.queue.filter(q=>q.type!=='setup');render();return;}
   if(a==='factor'||a==='factorAll'){const L=a==='factor'?S.recv.filter(r=>r.id===+b.dataset.id):S.recv.filter(r=>facD(r)!=null);let g=0,c=0;
     for(const r of L){const d=facD(r);if(d==null)continue;g+=r.amount*(1-d);c+=r.amount*d;r.paid=true;}S.recv=S.recv.filter(r=>!r.paid);
@@ -1115,7 +1127,7 @@ function act(a,b){
     S.cash-=RG.fee;S.year.other-=RG.fee;S.regions[k]=S.t;log('good',`设立${RG.name}分公司，开办费 ${fmt(RG.fee)}，每月运营 ${fmt(RG.ovh)}`);chron(`设立${RG.name}${RG.ov?'海外':''}分公司`);seal('进驻',`${RG.name}分公司成立`);
     for(let i=0;i<3;i++)S.tenders.push(genTender(k));checkAch();}
   if(a==='ipo'){if(S.ipo||!ipoConds().every(x=>x[1]))return;S.cash-=1000;S.year.other-=1000;const raise=valuation()*.25;S.cash+=raise;S.ipo={t:S.t,raise};
-    log('good',`公司在主板挂牌上市，募集资金 ${fmt(raise)}`);chron(`在主板挂牌上市，募集资金 ${fmt(raise)}，东大建筑成为公众公司`);seal('上市',`募集资金 ${fmt(raise)}`);checkAch();}
+    log('good',`公司在主板挂牌上市，募集资金 ${fmt(raise)}`);chron(`在主板挂牌上市，募集资金 ${fmt(raise)}，${coName()}成为公众公司`);seal('上市',`募集资金 ${fmt(raise)}`);checkAch();}
   save();render();
 }
 
@@ -1282,7 +1294,7 @@ function renderQual(){
 }
 function renderRivals(){
   const rows=S.rivals.map(r=>({me:false,name:r.name,q:QUAL[r.q].name,sz:r.sz>=0?QUALM[r.sz].name:'—',bl:r.bl,sg:r.signedY,st:rivStyle(r),hl:rivHealth(r),h:r.h}));
-  rows.push({me:true,name:'东大建筑（本公司）',q:QUAL[S.qual].name,sz:S.mq>=0?QUALM[S.mq].name:'—',bl:backlog(),sg:S.year.signed,st:'—',hl:'—'});
+  rows.push({me:true,name:''+coName()+'（本公司）',q:QUAL[S.qual].name,sz:S.mq>=0?QUALM[S.mq].name:'—',bl:backlog(),sg:S.year.signed,st:'—',hl:'—'});
   rows.sort((a,b)=>b.bl-a.bl);
   $('#rsub2').textContent=`你排第 ${rows.findIndex(r=>r.me)+1} / ${rows.length}`;
   $('#rivals').innerHTML='<div class="tbl"><table><thead><tr><th class="n">#</th><th>企业</th><th>房建</th><th>市政</th><th class="n">在手合同</th><th class="n">本年新签</th><th>风格</th><th>经营</th></tr></thead><tbody>'+
@@ -1329,7 +1341,7 @@ function renderModal(){
     const ev=r.ev.filter(x=>!/^中标「|未中标|竣工验收|点亮 \+|达成成就|^递交/.test(x.x)).slice(-8);
     if(ev.length)c+=`<h3>本月动态</h3>`+ev.map(x=>`<div class="mr-row"><span class="grow ${x.k==='bad'?'neg':x.k==='good'?'pos':''}" style="font-size:12.5px">${esc(x.x)}</span></div>`).join('');
     c+='</div>';
-    m.innerHTML=`<div class="dlg receipt" role="dialog" aria-modal="true"><h2><span class="tag">经营结算单<span class="rc-no">编号 ${String(Y0()+Math.floor(r.t/12))}${String(r.t%12+1).padStart(2,'0')}-${String(hsh(r.t+CO)%9000+1000)}</span></span>${per}</h2><div class="cnt">${c}</div><div class="rc-foot"><span>编制：财务部　审核：总经理办公室<br>${CO}</span>${sealSVG(CO,'财务专用章')}</div><div class="opts go"><button class="btn primary big" data-act="choice" data-opt="ok" id="mr-go">继续经营 →</button></div></div>`;
+    m.innerHTML=`<div class="dlg receipt" role="dialog" aria-modal="true"><h2><span class="tag">经营结算单<span class="rc-no">编号 ${String(Y0()+Math.floor(r.t/12))}${String(r.t%12+1).padStart(2,'0')}-${String(hsh(r.t+CO())%9000+1000)}</span></span>${per}</h2><div class="cnt">${c}</div><div class="rc-foot"><span>编制：财务部　审核：总经理办公室<br>${CO()}</span>${sealSVG(CO(),'财务专用章')}</div><div class="opts go"><button class="btn primary big" data-act="choice" data-opt="ok" id="mr-go">继续经营 →</button></div></div>`;
     {const tz=document.getElementById('toasts');if(tz)tz.innerHTML='';}countUp();setTimeout(()=>{const g=$('#mr-go');if(g)g.focus({preventScroll:true});},30);return;}
   if(e.type==='pdec'){const p=S.projects.find(x=>x.id===e.pid),D=PDK[e.k];if(!p){S.queue.shift();renderModal();return;}
     const ops=['a','b','c'].filter(k=>D[k]).map(k=>opt(k,D[k][0],typeof D[k][1]==='function'?D[k][1](e,p):D[k][1])).join('');
@@ -1337,8 +1349,9 @@ function renderModal(){
   if(e.type==='bio'){m.innerHTML=`<div class="dlg" role="dialog" aria-modal="true" style="max-width:640px"><h2><span class="tag">企业传记</span>${esc(bioData().title)}</h2><div class="cnt">${bioHTML()}</div><div class="opts go"><button class="btn ghost" data-act="biocopy">复制全文</button><button class="btn primary" data-act="choice" data-opt="ok">合上</button></div></div>`;return;}
   if(e.type==='cert'){m.innerHTML=`<div class="dlg cert-dlg" role="dialog" aria-modal="true">${certHTML(e.c)}<div class="opts go"><button class="btn primary big" data-act="choice" data-opt="ok" id="ct-go">收下证书</button></div></div>`;setTimeout(()=>{const g=$('#ct-go');if(g)g.focus({preventScroll:true});},30);return;}
   if(e.type==='setup'){const so=(act,k,D,cur)=>`<button class="opt" data-act="${act}" data-v="${k}" aria-pressed="${cur===k}"><b>${D.n}</b><span>${D.d}</span></button>`;
-    m.hidden=false;m.innerHTML=`<div class="dlg setup" role="dialog" aria-modal="true"><h2><span class="tag">新开局</span>东大建筑从哪里起步？</h2><div class="cnt">
-      <h3>时代</h3><div class="opts" style="padding:0">${Object.entries(ERAS).map(([k,D])=>so('setera',k,D,UI.setup.era)).join('')}</div>
+    m.hidden=false;m.innerHTML=`<div class="dlg setup" role="dialog" aria-modal="true">${heroHTML()}<h2><span class="tag">新开局</span>从哪里起步？</h2><div class="cnt">
+      <h3>公司名称</h3><label class="cn-in"><input id="set-cn" maxlength="8" autocomplete="off" placeholder="东大建筑" value="${esc(UI.setup.cn==null?'东大建筑':UI.setup.cn)}"><span>工商登记全称：<b id="set-cnf">${esc(cnFull(UI.setup.cn))}</b></span></label><div class="msg" id="set-cnm"></div>
+      <h3 style="margin-top:14px">时代</h3><div class="opts" style="padding:0">${Object.entries(ERAS).map(([k,D])=>so('setera',k,D,UI.setup.era)).join('')}</div>
       <h3 style="margin-top:14px">出身背景</h3><div class="opts" style="padding:0">${Object.entries(BGS).map(([k,D])=>so('setbg',k,D,UI.setup.bg)).join('')}</div>
       <h3 style="margin-top:14px">难度</h3><div class="opts" style="padding:0">${Object.entries(DIFS).map(([k,D])=>so('setdk',k,D,UI.setup.dk)).join('')}</div><button class="opt ck" data-act="settut" aria-pressed="${UI.setup.tut}"><b>${UI.setup.tut?'☑':'☐'} 开启新手引导</b><span>办公室主任老周会在头几个月带您熟悉经营</span></button></div>
       <div class="opts" style="flex-direction:row;gap:8px"><button class="btn primary big" data-act="setgo">开始经营</button>${e.cancel?'<button class="btn ghost" data-act="setcancel">取消</button>':''}${SLOTS.some(hasSlot)?'<button class="btn ghost" data-act="setload">读取存档</button>':''}</div></div>`;return;}
@@ -1356,8 +1369,8 @@ function renderModal(){
     c=`<table class="rep"><tbody>${row('营业收入（确认产值）',fmt(y.rev))}${row('工程成本',fmt(-y.cost))}${row('毛利',fmt(y.rev-y.cost),y.rev-y.cost>=0?'pos':'neg')}${row('管理费用及工资',fmt(-y.ovh))}${row('产业链子公司利润',fmt(y.sub||0),(y.sub||0)>=0?'pos':'neg')}${row('财务费用',fmt(-y.int))}${row('其他损益（罚款/签约/坏账等）',fmt(y.other))}${row('企业所得税（25%）',fmt(-(y.tax||0)))}${row('<b>净利润</b>','<b>'+fmt(np)+'</b>',np>=0?'pos':'neg')}${row('新签合同额',fmt(y.signed))}${row('年末现金 / 借款',fmt(e.cash)+' / '+fmt(e.loan))}${row('年末应收账款',fmt(e.recv))}${row('年末净资产',fmt(e.net))}${row('在手合同',fmt(e.bl))}${row('信用分',Math.round(e.rep))}${row('全国排名（按年营收）','约第 '+natRank(y.rev).toLocaleString('zh-CN')+' 位')}${row('行业在手合同排名','第'+e.rank+' / '+(S.rivals.length+1))}</tbody></table>`;
     if(e.gr){const g=e.gr,L=['营业收入 '+fmt(g.rev),'净利润 '+fmt(g.prof),'零重大安全事故'];c+=`<h3 style="margin-top:14px">董事会目标考核 · ${g.sc}/3</h3>`+L.map((l,i)=>`<div class="mr-row"><span class="${g.res[i]?'ok':'no'}">${g.res[i]?'✓':'✗'}</span><span class="grow">${l}</span></div>`).join('')+`<p class="${g.sc>=2?'pos':'neg'}" style="margin:8px 0 0;font-size:13px">${['董事会严厉问责，信用分 -5','董事会质询经营班子，信用分 -2','基本完成目标，信用分 +2','全面超额完成，董事会通报表彰，信用分 +5'][g.sc]}</p>`;}
     o=opt('ok','继续经营','进入新的一年');}
-  if(e.type==='win'){t='<span class="tag">里程碑</span>取得特级资质';c=`用时 <b class="num">${S.t}</b> 个月，东大建筑跻身行业头部。业绩库 ${S.perfCount} 项，合计 ${fmt(S.perfSum)}。`;o=opt('ok','继续经营','冲击更高营收')+opt('bio','翻阅企业传记','回顾一路走来的历程');}
-  if(e.type==='over'){t='<span class="tag">破产</span>资金链断裂';c=`坚持了 <b class="num">${S.t}</b> 个月，最高资质 ${QUAL[S.qual].name}，累计业绩 ${fmt(S.perfSum)}。账上的利润救不了断掉的现金流。`;o=opt('c','翻阅企业传记','看看东大这一路')+opt('a','重新开局','选择时代、出身和难度，重新开始')+(SLOTS.some(hasSlot)?opt('b','读取存档','回到之前保存的进度'):'');}
+  if(e.type==='win'){t='<span class="tag">里程碑</span>取得特级资质';c=`用时 <b class="num">${S.t}</b> 个月，${coName()}跻身行业头部。业绩库 ${S.perfCount} 项，合计 ${fmt(S.perfSum)}。`;o=opt('ok','继续经营','冲击更高营收')+opt('bio','翻阅企业传记','回顾一路走来的历程');}
+  if(e.type==='over'){t='<span class="tag">破产</span>资金链断裂';c=`坚持了 <b class="num">${S.t}</b> 个月，最高资质 ${QUAL[S.qual].name}，累计业绩 ${fmt(S.perfSum)}。账上的利润救不了断掉的现金流。`;o=opt('c','翻阅企业传记','看看'+coShort()+'这一路')+opt('a','重新开局','选择时代、出身和难度，重新开始')+(SLOTS.some(hasSlot)?opt('b','读取存档','回到之前保存的进度'):'');}
   m.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h2>${t}</h2><div class="cnt">${c}</div><div class="opts">${o}</div></div>`;
 }
 function countUp(){const el=document.querySelector('#modal .count');if(!el)return;const a=+el.dataset.from,b=+el.dataset.to;
@@ -1445,6 +1458,13 @@ function thumb(name,line,cls,w,h){const u='t'+(++SCN),k=kindOf(name,line),hz=HOR
 function lmThumb(name,line,ghost){const u='l'+(++SCN),w=120,h=80,k=kindOf(name,line),hz=HORIZ.includes(k),b=h-6,W=w*(hz||['stad','expo','term'].includes(k)?.9:.5),H=hz?h*.7:h*.9,x=(w-W)/2;
   let o=`<defs>${defsFor(u)}</defs>`;if(ghost){NOWIN=true;o+=`<g class="sk-ghost">${shape(k,x,b,W,H,'gh',rng(1),false)}</g>`;NOWIN=false;}else o+=shape(k,x,b,W,H,'sk-lm',rng(hsh(name)),true);
   return `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true">${o}<line x1="4" x2="${w-4}" y1="${b}" y2="${b}" stroke="var(--muted)" stroke-width="1"/></svg>`;}
+function heroHTML(){const W=540,H=150,b=128,u='h'+(++SCN);let o=`<defs>${defsFor(u)}<linearGradient id="g${u}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#g${u})"/>`;
+  const fr=rng(7);for(let x=0;x<W;){const w=8+fr()*20,h=10+fr()*26;o+=R_(x,b-h,w,h,'sk-far');x+=w+fr()*5;}
+  o+=`<circle class="sk-sun" cx="${W-70}" cy="36" r="13"/>`;
+  [['res',250,26,58],['tall',282,30,96],['ind',318,44,40],['tall',368,26,112],['civic',400,48,54],['res',454,24,66]].forEach(([k,x,w,h],i)=>{o+=shape(k,x,b,w,h,i===3?'sk-lm':'sk-b',rng(i*31+5),true);});
+  o+=buildUp('tall',484,b,30,104,'sk-b',91,.55,u+'_b',false,true)+craneV2(517,b,b-70,44);
+  o+=R_(0,b,W,H-b,'sk-g');
+  return `<div class="hero"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">${o}</svg><div class="ht"><b>基建<em>狂魔</em></b><span>从一支施工队，到特级资质、上市公司</span></div></div>`;}
 function renderSkyline(){$('#skyline').innerHTML=skylineHTML();}
 if(window.matchMedia)try{matchMedia('(max-width:720px)').addEventListener('change',()=>{try{renderSkyline();}catch(e){}});}catch(e){}
 function skylineHTML(){
@@ -1473,20 +1493,24 @@ function skylineHTML(){
   return `<svg viewBox="0 0 ${W} ${HH}" preserveAspectRatio="xMaxYMax slice" role="img" aria-label="江州天际线"><defs>${defs}</defs><rect x="0" y="0" width="${W}" height="${HH}" fill="url(#g${u})"/>${stars}<circle class="sk-sun" cx="${MB?W-40:150}" cy="${MB?50:42}" r="${MB?12:15}"/>${far}${body}${R_(0,b,W,HH-b,'sk-g')}<path class="sk-river" d="${wave}"/></svg>
     <div class="cap"><b>江州天际线</b><span>已建成 ${S.perfCount+S.mPerfCount} 项 · 地标 ${S.lms.length} 座${S.projects.length?` · 在建 ${S.projects.length}`:''}</span></div>`;
 }
-const CO='江州东大建筑工程有限公司';
+function coName(){return (S&&S.cn)||'东大建筑';}
+function coShort(){const c=coName(),k=c.replace(/(建筑|建设|建工|集团|工程|有限|公司)+$/,'');return k||c;}
+function CO(){const k=coShort();return (/^江州/.test(k)?'':'江州')+k+'建筑工程有限公司';}
+function cnFull(v){const o=S;S={cn:cleanCN(v)};const r=CO();S=o;return r;}
+function cleanCN(v){v=String(v||'').replace(/[<>&"'`\\\s]/g,'').slice(0,8);return [...v].length>=2?v:'';}
 function sealSVG(txt,inner){const u='z'+(++SCN),n=[...txt].length;
   return `<svg class="sealsvg" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="${u}" d="M18,58 A33,33 0 1 1 82,58"/></defs><circle class="ring" cx="50" cy="50" r="46" stroke-width="3.2"/><circle class="ring" cx="50" cy="50" r="41" stroke-width=".8"/>
     <text font-size="${n>12?9.2:n>9?10.5:12}" letter-spacing="${n>12?.2:1}"><textPath href="#${u}" startOffset="50%" text-anchor="middle">${esc(txt)}</textPath></text>
     <path class="star" d="M50,36 L53.5,46.2 L64.3,46.2 L55.6,52.6 L58.9,62.8 L50,56.5 L41.1,62.8 L44.4,52.6 L35.7,46.2 L46.5,46.2Z"/>${inner?`<text x="50" y="76" font-size="9" text-anchor="middle">${esc(inner)}</text>`:''}</svg>`;}
-function certNo(line,lv,t){const r=rng(hsh(line+lv+t+CO));let d='';for(let i=0;i<9;i++)d+=Math.floor(r()*10);return (line==='sz'?'D3':'D2')+d;}
+function certNo(line,lv,t){const r=rng(hsh(line+lv+t+CO()));let d='';for(let i=0;i<9;i++)d+=Math.floor(r()*10);return (line==='sz'?'D3':'D2')+d;}
 function certHTML(c){const TB=lineTbl(c.line);
   return `<div class="cert"><div class="cert-in"><div class="ct-emb">★</div><div class="ct-h">建筑业企业资质证书</div><div class="ct-sub">（ 副 本 ）</div>
-    <dl><dt>企业名称</dt><dd>${CO}</dd><dt>资质类别</dt><dd>${c.line==='sz'?'市政公用工程施工总承包':'建筑工程施工总承包'}</dd><dt>资质等级</dt><dd class="big">${TB[c.lv].name}</dd>
+    <dl><dt>企业名称</dt><dd>${CO()}</dd><dt>资质类别</dt><dd>${c.line==='sz'?'市政公用工程施工总承包':'建筑工程施工总承包'}</dd><dt>资质等级</dt><dd class="big">${TB[c.lv].name}</dd>
     <dt>证书编号</dt><dd class="num">${c.no}</dd><dt>有效期至</dt><dd>${ym(c.t+60)}</dd></dl>
     <div class="ct-foot"><span>发证机关：江州市住房和城乡建设局<br>发证日期：${ym(c.t)}</span>${sealSVG('江州市住房和城乡建设局','行政审批专用章')}</div></div></div>`;}
 function noticeHTML(x,i){const RG=REG[x.reg||'home']||REG.home;const yr=Y0()+Math.floor((x.t||S.t)/12);const no=String(hsh(x.n)%900+100);
   return `<div class="notice" style="--i:${i}"><div class="nt-h">中标通知书</div><div class="nt-no">${RG.ov?'国际工程':(RG.name.slice(0,2))}招〔${yr}〕第${no}号</div>
-    <p>${CO}：</p><p>　　你单位参加的「${esc(x.n)}」${x.kind?x.kind.toUpperCase()+'项目':'施工'}招标，经评标委员会评审，确定你单位为中标人。中标价 <b class="num">${fmt(x.V)}元</b>（下浮 ${pct(1-x.r)}）。请于三十日内与招标人签订合同。</p>
+    <p>${CO()}：</p><p>　　你单位参加的「${esc(x.n)}」${x.kind?x.kind.toUpperCase()+'项目':'施工'}招标，经评标委员会评审，确定你单位为中标人。中标价 <b class="num">${fmt(x.V)}元</b>（下浮 ${pct(1-x.r)}）。请于三十日内与招标人签订合同。</p>
     <div class="nt-f"><span>招标人：${esc(x.own||'项目业主')}<br>${ym(x.t||S.t)}</span>${sealSVG(RG.ov?'国际工程招标代理有限公司':(RG.name.slice(0,2)+'公共资源交易中心'),'')}</div></div>`;}
 function renderCerts(){const L=(S.certs||[]).slice().reverse();$('#certsub').textContent=`${L.length} 本`;
   $('#certs').innerHTML=L.length?'<div class="certs">'+L.map(c=>`<div class="mcert"><div><b>${c.line==='sz'?'市政公用工程':'建筑工程'}施工总承包</b><span class="lv">${lineTbl(c.line)[c.lv].name}</span><span>${c.no}</span><span>${ym(c.t)} 核发</span>${sealSVG('江州市住房和城乡建设局','')}</div></div>`).join('')+'</div>':'<div class="empty">还没有资质证书。</div>';}
@@ -1553,13 +1577,13 @@ function setGoal(){const ly=S.years[S.years.length-1];const base={pri:[3000,90],
 function renderGoal(){const g=S.goal,el=$('#goal');if(!g){el.innerHTML='';return;}const y=S.year,left=12-S.t%12,pr=yProf(y),acc=y.acc||0;
   const it=(l,c,t)=>{const r=clamp(c/t,0,1);return `<div class="gi"><span>${l}<b>${fmt(c)} / ${fmt(t)}</b></span><div class="bar ${r>=1?'ok':''}"><i style="width:${r*100}%"></i></div></div>`;};
   el.innerHTML=`<div class="goal"><div class="gt">${Y0()+g.y} 年度董事会目标<small>还剩 ${left} 个月${S.goalStreak?` · 已连续达标 ${S.goalStreak} 年`:''}</small></div>${it('营业收入',y.rev,g.rev)}${it('净利润',pr,g.prof)}<div class="gi"><span>重大安全事故<b class="${acc?'neg':'pos'}">${acc} 起</b></span><div class="bar ${acc?'':'ok'}"><i style="width:${acc?0:100}%"></i></div></div></div>`;}
-function bioData(){const E=ERAS[S.era||'now'],B={pri:'一支只有两名项目经理的小队伍，在江州挂牌成立了东大建筑',soe:'江州市建筑工程公司完成改制，更名为东大建筑',gk:'一支挂靠别人资质干了多年的施工队，终于注册了自己的公司——东大建筑'}[S.bg||'pri'];
+function bioData(){const E=ERAS[S.era||'now'],B={pri:'一支只有两名项目经理的小队伍，在江州挂牌成立了'+coName()+'',soe:'江州市建筑工程公司完成改制，更名为'+coName()+'',gk:'一支挂靠别人资质干了多年的施工队，终于注册了自己的公司——'+coName()+''}[S.bg||'pri'];
   const yrs=Math.floor(S.t/12),mo=S.t%12,aw=S.awards||[],lb=aw.filter(a=>a.tier===3).length;
   const ch=(S.chron||[]).slice().reverse(),by={};for(const c of ch){const y=Y0()+Math.floor(c.t/12);(by[y]=by[y]||[]).push(c.x);}
   const yrows=Object.keys(by).sort().map(y=>{const Yd=(S.years||[]).find(x=>x.y==y);const ev=by[y];const pick=ev.length>5?[ev[0],...ev.slice(1).filter(x=>/地标|上市|资质|鲁班|收购|海外|分公司|特级|一级|成就「(营收|全国|上市|天际线|扬帆)/.test(x)).slice(0,4)]:ev;
     return {y,txt:pick.map(x=>x.replace(/[。，；]+$/,'')).join('；')+'。',fin:Yd?`全年营业收入 ${fmt(Yd.rev)}，净利润 ${fmt(Yd.prof)}，全国排名约第 ${Yd.rank.toLocaleString('zh-CN')} 位。`:''};});
-  const end=S.over?'资金链最终没能撑住，公司进入破产清算。账上的利润救不了断掉的现金流——这是东大留给后来者的一课。':S.ipo?`如今的东大已是一家公众公司，市值约 ${fmt(valuation())}。江州的天际线上，有${S.lms.length?S.lms.length+'座地标和':''}${S.perfCount+S.mPerfCount}项工程出自东大之手。故事仍在继续。`:`东大仍在路上。${S.lms.length?'江州天际线上已经有了东大的地标。':'第一座地标，还在等它的建造者。'}`;
-  return {title:`东大建筑${yrs?yrs+'年':''}${mo?mo+'个月':''}`,lead:`${Y0()}年，${B}。${S.era&&S.era!=='now'?E.d:''}`,
+  const end=S.over?'资金链最终没能撑住，公司进入破产清算。账上的利润救不了断掉的现金流——这是'+coShort()+'留给后来者的一课。':S.ipo?`如今的${coShort()}已是一家公众公司，市值约 ${fmt(valuation())}。江州的天际线上，有${S.lms.length?S.lms.length+'座地标和':''}${S.perfCount+S.mPerfCount}项工程出自${coShort()}之手。故事仍在继续。`:`${coShort()}仍在路上。${S.lms.length?'江州天际线上已经有了'+coShort()+'的地标。':'第一座地标，还在等它的建造者。'}`;
+  return {title:`${coName()}${yrs?yrs+'年':''}${mo?mo+'个月':''}`,lead:`${Y0()}年，${B}。${S.era&&S.era!=='now'?E.d:''}`,
     stats:[['经营时长',`${yrs}年${mo}个月`],['累计完工',`${S.perfCount+S.mPerfCount}项 · ${fmt(S.perfSum+S.mPerfSum)}`],['城市地标',`${S.lms.length}座`],['工程奖项',`${aw.length}项${lb?` · 鲁班奖${lb}`:''}`],['最高排名',S.bestRank?`约第 ${S.bestRank.toLocaleString('zh-CN')} 位`:'—'],['资质',`房建${QUAL[S.qual].name} · 市政${S.mq<0?'—':QUALM[S.mq].name}`]],yrows,end};}
 function bioText(){const d=bioData();return [d.title,'',d.lead,'',...d.stats.map(x=>x[0]+'：'+x[1]),'',...d.yrows.flatMap(r=>[r.y+'年',r.txt+(r.fin?' '+r.fin:''),'']),d.end].join('\n');}
 function bioHTML(){const d=bioData();return `<div class="bio"><p class="lead">${esc(d.lead)}</p><div class="sky skyline" style="margin:10px 0">${skylineHTML()}</div>
@@ -1738,6 +1762,7 @@ function render(){
   for(const t of ['ops','map','corp','honor','save'])$('#tab-'+t).hidden=UI.tab!==t;
   document.querySelectorAll('nav [data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===UI.tab)));
   if(UI.tab==='ops')renderSkyline();renderLmBand();renderGoal();renderNews();if(UI.tab==='map')renderMap();if(UI.tab==='corp')renderCorp();if(UI.tab==='honor'){renderHonor();renderCerts();}if(UI.tab==='save')renderSave();
+  document.querySelectorAll('.js-cn').forEach(e=>{if(e.textContent!==coName())e.textContent=coName();});document.title='基建狂魔 · '+coName();
   const qt=`房建${QUAL[S.qual].name} · 市政${S.mq<0?'—':QUALM[S.mq].name}`;
   document.querySelectorAll('.js-date').forEach(e=>e.textContent=ym(S.t));document.querySelectorAll('.js-q').forEach(e=>e.textContent=qt);
   const busy=S.over||S.queue.length>0;document.querySelectorAll('.js-adv,.js-adv3').forEach(b=>b.disabled=busy);
@@ -1751,7 +1776,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 const SLOTS=['1','2','3'];
 function slotKey(i){return 'dongda-slot-'+i;}
 function hasSlot(i){try{return localStorage.getItem(slotKey(i))!=null;}catch(e){return false;}}
-function slotMeta(o){return {era:o.era,y0:o.y0,t:o.t,bg:o.bg||'pri',dk:o.dk||'std',q:o.qual,mq:o.mq,cash:o.cash,lms:(o.lms||[]).length,ipo:!!o.ipo,over:!!o.over};}
+function slotMeta(o){return {cn:o.cn||'东大建筑',era:o.era,y0:o.y0,t:o.t,bg:o.bg||'pri',dk:o.dk||'std',q:o.qual,mq:o.mq,cash:o.cash,lms:(o.lms||[]).length,ipo:!!o.ipo,over:!!o.over};}
 function readSlot(i){try{const r=localStorage.getItem(i==='auto'?KEY:slotKey(i));if(!r)return null;const o=JSON.parse(r);return o&&o.s?o:{s:o,at:null};}catch(e){return null;}}
 function writeSlot(i,o){try{localStorage.setItem(slotKey(i),JSON.stringify({at:Date.now(),s:o}));return true;}catch(e){return false;}}
 function exportCode(){try{return btoa(unescape(encodeURIComponent(JSON.stringify(S))));}catch(e){return '';}}
@@ -1764,10 +1789,11 @@ function slotCard(id,o,label){
   const cf=UI.confirm&&UI.confirm.id===id?UI.confirm.a:null;
   const acts=id==='auto'?'<span class="chip good">当前进度</span>':
     `<button class="btn sm ${cf==='slotsave'?'primary':''}" data-act="slotsave" data-id="${id}">${cf==='slotsave'?'确认覆盖':'覆盖保存'}</button><button class="btn sm ${cf==='slotload'?'primary':''}" data-act="slotload" data-id="${id}">${cf==='slotload'?'确认读取':'读取'}</button><button class="btn sm ghost ${cf==='slotdel'?'primary':''}" data-act="slotdel" data-id="${id}">${cf==='slotdel'?'确认删除':'删除'}</button>`;
-  return `<div class="slot ${id==='auto'?'cur':''}"><div><div class="hd"><b>${label}</b><span class="num">${(m.y0||2026)+Math.floor(m.t/12)}年${m.t%12+1}月</span>${m.over?'<span class="chip bad">已破产</span>':''}${m.ipo?'<span class="chip">已上市</span>':''}</div>
+  return `<div class="slot ${id==='auto'?'cur':''}"><div><div class="hd"><b>${label}</b><span>${esc(m.cn)}</span><span class="num">${(m.y0||2026)+Math.floor(m.t/12)}年${m.t%12+1}月</span>${m.over?'<span class="chip bad">已破产</span>':''}${m.ipo?'<span class="chip">已上市</span>':''}</div>
     <div class="meta"><span>${m.era&&m.era!=='now'?ERAS[m.era].n+' · ':''}${BGS[m.bg]?BGS[m.bg].n:''} · ${DIFS[m.dk]?DIFS[m.dk].n:''}</span><span>房建${QUAL[m.q]?QUAL[m.q].name:''} · 市政${m.mq<0?'—':QUALM[m.mq].name}</span><span>现金 <span class="num">${fmt(m.cash)}</span></span>${m.lms?`<span>地标 ${m.lms} 座</span>`:''}${when?`<span>${when} 保存</span>`:''}</div></div><div class="acts">${acts}</div></div>`;
 }
 function renderSave(){
+  const ri=$('#rn-cn');if(!ri||document.activeElement!==ri)$('#rename').innerHTML=`<label class="cn-in"><input id="rn-cn" maxlength="8" autocomplete="off" value="${esc(coName())}"><span>工商登记全称：<b id="rn-cnf">${esc(CO())}</b></span></label><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="btn sm" data-act="rename">更名</button><span class="msg" id="rn-msg"></span></div>`;
   $('#slots').innerHTML='<div class="slots">'+slotCard('auto',{s:S,at:null},'自动存档')+SLOTS.map(i=>slotCard(i,readSlot(i),'存档 '+i)).join('')+'</div><p class="mut" style="font-size:12px;margin:8px 0 0">自动存档每次操作后都会更新。存档只保存在这台设备的这个浏览器里，清理浏览器数据会一并清除。</p>';
   $('#backup').innerHTML=`<p class="mut" style="margin:0 0 8px;font-size:13px">换设备或换浏览器时，先复制存档码，再到新设备粘贴读取。</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="btn sm" data-act="bkcopy">复制当前存档码</button><button class="btn sm" data-act="bkload">用下方存档码读取</button></div>
@@ -1787,7 +1813,7 @@ function load(){try{const r=localStorage.getItem(KEY);if(r)return migrate(JSON.p
 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;act(b.dataset.act,b);});
 document.addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('g[data-act]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();act(b.dataset.act,b);}});
-document.addEventListener('input',e=>{if(e.target.id==='bid-ratio'){UI.ratio=+e.target.value;updateBid();}});
+document.addEventListener('input',e=>{if(e.target.id==='bid-ratio'){UI.ratio=+e.target.value;updateBid();}if(e.target.id==='set-cn'||e.target.id==='rn-cn'){const f=$(e.target.id==='set-cn'?'#set-cnf':'#rn-cnf');if(e.target.id==='set-cn')UI.setup.cn=e.target.value;if(f)f.textContent=cnFull(e.target.value);const mm=$(e.target.id==='set-cn'?'#set-cnm':'#rn-msg');if(mm)mm.textContent='';}});
 document.addEventListener('change',e=>{
   if(e.target.id==='bid-pm'){UI.pm=+e.target.value||null;updateBid();}
   if(e.target.dataset.assign){const p=S.projects.find(x=>x.id===+e.target.dataset.assign);const pm=pmOf(+e.target.value);if(p&&pm&&pm.busy==null){p.pm=pm.id;pm.busy=p.id;log('info',`指派${pm.name}接手「${p.name}」`);toast(`${esc(pm.name)} 接手「${esc(p.name)}」`,'info');save();render();}}
