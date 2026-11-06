@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://lynch715.github.io/jijian-kuangmo/index.html",
+    "status": 200,
+    "sha256": "c6fcde0402552b2235d83c77ea0417c0fc44c1e2f3cae2aa2ba0ec1f8aa58a09",
+    "matchesLocal": true
+  },
+  {
+    "url": "https://lynch715.github.io/jijian-kuangmo/favicon.svg",
+    "status": 200,
+    "sha256": "839208e699764a0d64333644c0dd70702790a53e7e97bbe0e19ef083fff2bc71",
+    "matchesLocal": true
+  },
+  {
+    "url": "https://lynch715.github.io/jijian-kuangmo/posters/poster-qr.png",
+    "status": 200,
+    "sha256": "0c1ef73e4570bcba9359cc68c80e572cedae46c823f6c9117f93666959eefbe8",
+    "matchesLocal": true,
+    "size": [
+      1080,
+      1920
+    ],
+    "decoded": [
+      "https://lynch715.github.io/jijian-kuangmo/"
+    ]
+  },
+  {
+    "url": "https://lynch715.github.io/jijian-kuangmo/posters/poster.png",
+    "status": 200,
+    "sha256": "d53bbbef6bfe660af82d281f8b8e4bc90d80489250ca066fef21c77bff62dba2",
+    "matchesLocal": true,
+    "size": [
+      1080,
+      1920
+    ],
+    "decoded": []
+  }
+]

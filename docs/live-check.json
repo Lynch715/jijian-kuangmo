@@ -1,4 +1,143 @@
 {
   "url": "https://lynch715.github.io/jijian-kuangmo/",
-  "status": "更名发布中的线上检查，部署完成后补充"
+  "checks": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "newGame": true,
+      "advancedMonths": 3,
+      "savePreserved": true,
+      "pages": [
+        {
+          "tab": "map",
+          "viewport": 1440,
+          "scrollWidth": 1440
+        },
+        {
+          "tab": "corp",
+          "viewport": 1440,
+          "scrollWidth": 1440
+        },
+        {
+          "tab": "honor",
+          "viewport": 1440,
+          "scrollWidth": 1440
+        },
+        {
+          "tab": "save",
+          "viewport": 1440,
+          "scrollWidth": 1440
+        },
+        {
+          "tab": "ops",
+          "viewport": 1440,
+          "scrollWidth": 1440
+        }
+      ],
+      "metadata": {
+        "doctype": "html",
+        "language": "zh-CN",
+        "viewport": "width=device-width, initial-scale=1, viewport-fit=cover",
+        "title": "基建狂魔 · 东大建筑",
+        "ogTitle": "基建狂魔",
+        "ogDescription": "从一支施工队，到特级资质、上市公司",
+        "ogImage": "https://lynch715.github.io/jijian-kuangmo/posters/poster.png",
+        "favicon": "https://lynch715.github.io/jijian-kuangmo/favicon.svg"
+      },
+      "assets": [
+        {
+          "url": "https://lynch715.github.io/jijian-kuangmo/posters/poster.png",
+          "status": 200,
+          "type": "image/png"
+        },
+        {
+          "url": "https://lynch715.github.io/jijian-kuangmo/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml"
+        }
+      ],
+      "errors": [],
+      "failedResponses": [],
+      "failedRequests": [],
+      "dialogs": [
+        "继续经营 →",
+        "继续经营 →",
+        "继续经营 →",
+        "囤货锁价\n按当前价格锁定该项目剩余材料，仓储费约 1.3万"
+      ]
+    },
+    {
+      "name": "iphone13",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "newGame": true,
+      "advancedMonths": 3,
+      "savePreserved": true,
+      "pages": [
+        {
+          "tab": "map",
+          "viewport": 390,
+          "scrollWidth": 390
+        },
+        {
+          "tab": "corp",
+          "viewport": 390,
+          "scrollWidth": 390
+        },
+        {
+          "tab": "honor",
+          "viewport": 390,
+          "scrollWidth": 390
+        },
+        {
+          "tab": "save",
+          "viewport": 390,
+          "scrollWidth": 390
+        },
+        {
+          "tab": "ops",
+          "viewport": 390,
+          "scrollWidth": 390
+        }
+      ],
+      "metadata": {
+        "doctype": "html",
+        "language": "zh-CN",
+        "viewport": "width=device-width, initial-scale=1, viewport-fit=cover",
+        "title": "基建狂魔 · 东大建筑",
+        "ogTitle": "基建狂魔",
+        "ogDescription": "从一支施工队，到特级资质、上市公司",
+        "ogImage": "https://lynch715.github.io/jijian-kuangmo/posters/poster.png",
+        "favicon": "https://lynch715.github.io/jijian-kuangmo/favicon.svg"
+      },
+      "assets": [
+        {
+          "url": "https://lynch715.github.io/jijian-kuangmo/posters/poster.png",
+          "status": 200,
+          "type": "image/png"
+        },
+        {
+          "url": "https://lynch715.github.io/jijian-kuangmo/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml"
+        }
+      ],
+      "errors": [],
+      "failedResponses": [],
+      "failedRequests": [],
+      "dialogs": [
+        "继续经营 →",
+        "接下追加\n合同额 +74.0万，成本相应增加，工期 +1个月",
+        "继续经营 →",
+        "继续经营 →"
+      ]
+    }
+  ]
 }
