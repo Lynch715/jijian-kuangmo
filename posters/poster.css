@@ -1,0 +1,43 @@
+@import url("assets/fonts/fonts.css");
+:root{--bg:#0E1419;--panel:#151D24;--sunk:#111820;--ink:#E1E8EB;--muted:#8C9BA4;--line:#26333C;--accent:#FF7A2E;--blue:#73A9DA;--sans:"Noto Sans SC",sans-serif;--serif:"Noto Serif SC",serif;--mono:"JetBrains Mono",monospace}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;background:var(--bg);color:var(--ink)}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
+.poster{position:relative;width:1080px;height:1920px;overflow:hidden;background:radial-gradient(ellipse at 92% 7%,#1E4F7A40,transparent 37%),linear-gradient(90deg,transparent 59px,#26333C55 60px,transparent 61px),var(--bg)}
+.poster:before{content:"";position:absolute;inset:0;background:linear-gradient(#73A9DA07 1px,transparent 1px),linear-gradient(90deg,#73A9DA07 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.topline{position:absolute;top:54px;left:64px;right:64px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line);padding-bottom:20px;color:var(--muted);font-size:20px;letter-spacing:4px}
+.square{display:inline-block;width:14px;height:14px;background:var(--accent)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.topline .mono{margin-left:auto;font-size:18px;letter-spacing:2px}
+.title{position:absolute;top:114px;left:58px;margin:0;font-family:var(--serif);font-size:108px;font-weight:900;letter-spacing:5px;line-height:1.13}
+.title span{display:block;color:var(--accent)}
+.serial{position:absolute;right:67px;top:141px;color:var(--blue);writing-mode:vertical-rl;font-size:18px;letter-spacing:7px}
+.serial:before{content:"";display:block;height:67px;width:2px;background:var(--accent);margin:0 auto 24px}
+.subtitle{position:absolute;top:371px;left:64px;font-size:29px;letter-spacing:1px;margin:0;color:var(--ink)}
+.subtitle strong{font-weight:700;color:var(--accent)}
+.screens{position:absolute;left:64px;right:64px;top:440px}
+.screen{border:1px solid #3b4c57;background:var(--panel);box-shadow:0 20px 60px #0003;overflow:hidden}
+.screen-head{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);height:46px;font-size:17px;color:var(--muted)}
+.screen-head .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.screen-head .right{margin-left:auto;font-family:var(--mono);font-size:14px;color:var(--blue)}
+.wide img{display:block;width:100%;height:auto}
+.wide .skyline{border-top:1px solid var(--line)}
+.details{display:grid;grid-template-columns:598px 334px;gap:18px;margin-top:18px;height:360px}
+.details .screen{height:360px}
+.details img{display:block;width:100%;height:313px;object-fit:cover;object-position:top}
+.details .cash img{object-fit:contain;object-position:center;background:var(--panel)}
+.features{position:absolute;top:1210px;left:64px;right:64px;border-top:2px solid var(--accent)}
+.feature{display:flex;align-items:center;gap:23px;padding:13px 0;border-bottom:1px solid var(--line);font-size:25px;letter-spacing:.2px}
+.feature .n{font-size:17px;color:var(--accent);padding:0 1px}
+.feature strong{font-weight:700;color:var(--ink)}
+.callout{position:absolute;top:1440px;left:64px;right:64px;height:378px;display:grid;grid-template-columns:378px 1fr;gap:40px;align-items:center}
+.qr{width:378px;height:378px;background:#F6F8F8;display:block;image-rendering:pixelated}
+.call-copy .label{font-size:20px;color:var(--accent);letter-spacing:4px;margin-bottom:15px;display:flex;align-items:center;gap:12px}
+.call-copy h2{font-family:var(--serif);font-size:62px;font-weight:900;letter-spacing:3px;line-height:1.24;margin:0 0 22px}
+.call-copy p{font-size:23px;color:var(--muted);line-height:1.7;margin:0}
+.arrow{display:inline-block;color:var(--accent);font-family:var(--mono);font-weight:400}
+.cover-map{height:378px;width:378px;border:1px solid #3b4c57;overflow:hidden;background:var(--panel);position:relative}
+.cover-map img{display:block;position:absolute;top:0;left:0;width:440px;max-width:none;height:auto}
+.cover-map:after{position:absolute;content:"";inset:auto 0 0;height:36px;background:linear-gradient(transparent,var(--panel))}
+.footer{position:absolute;left:64px;right:64px;top:1856px;border-top:1px solid var(--line);padding-top:17px;display:flex;align-items:center;justify-content:space-between;font-size:21px;letter-spacing:1px}
+.footer .mono{font-size:14px;color:var(--muted);letter-spacing:1px}

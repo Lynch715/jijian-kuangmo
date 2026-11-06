@@ -1,0 +1,12 @@
+{
+  "name": "dongda-construction-sim",
+  "private": true,
+  "description": "仅用于截图与海报重出；游戏本体不需要安装或构建",
+  "scripts": {
+    "capture": "node scripts/capture-game.cjs",
+    "posters": "node scripts/render-posters.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  }
+}
