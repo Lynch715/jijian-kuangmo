@@ -63,7 +63,7 @@ const themeKey = 'jijian-kuangmo-theme';
       await page.locator('.theme-options').scrollIntoViewIfNeeded();
       await page.evaluate(() => document.fonts.ready);
       await page.waitForFunction(() => !document.querySelector('.toast'));
-      await page.screenshot({ path: path.join(out, `${name}-${mode}.png`) });
+      await page.screenshot({ path: path.join(out, `${name}-${mode}.png`), animations: 'disabled' });
       await page.reload({ waitUntil: 'networkidle' });
       await openSettings(page, mobile);
       await expectTheme(page, mode, mode, before);
