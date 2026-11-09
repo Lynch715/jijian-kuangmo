@@ -60,6 +60,10 @@ npm run posters
 
 `npm run capture` 会在独立浏览器会话中新开局、实际投标并推进八个月，更新 `posters/assets/` 中的游戏截图；不会接触日常浏览器的存档。更换本地服务端口可设置 `GAME_URL` / `POSTER_BASE`。更新页面外壳可运行 `python3 scripts/prepare-site.py`，脚本会检查原始样式、脚本与正文是否一致。
 
+## 数值平衡回归
+
+`node scripts/balance-sim/run.cjs [每组局数] [月数]` 会直接读取 `dongda-mvp.html` 的游戏逻辑，用三种自动玩家（不看现金猛投、参考现金预测谨慎投、按「若中标」提示投）在各开局、难度、时代下各跑若干局，输出破产率、升到一级资质的比例和幸存者净资产。调整数值后跑一遍，对比改动前后即可。
+
 ## 发布方式
 
 GitHub Pages 从 **main 分支根目录**发布。分享预览 `og:image` 指向无二维码的 `posters/poster.png`，favicon 为橙色塔吊与建筑剪影。微信等平台的预览呈现和裁切以平台规则为准。
