@@ -18,6 +18,29 @@
 <title>基建狂魔</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+(function(){
+  const key='jijian-kuangmo-theme',root=document.documentElement;
+  const valid=v=>['auto','light','dark'].includes(v);
+  const system=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+  let mode='auto';
+  try{const saved=localStorage.getItem(key);if(valid(saved))mode=saved;}catch(e){}
+  function apply(){
+    if(mode==='auto')root.removeAttribute('data-theme');else root.dataset.theme=mode;
+    const dark=mode==='dark'||(mode==='auto'&&system&&system.matches);
+    root.style.colorScheme=dark?'dark':'light';
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.content=dark?'#FF7A2E':'#D9530E');
+    document.querySelectorAll('[data-theme-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeMode===mode)));
+  }
+  document.addEventListener('click',e=>{
+    const b=e.target.closest&&e.target.closest('[data-theme-mode]');if(!b||b.disabled||!valid(b.dataset.themeMode))return;
+    mode=b.dataset.themeMode;try{localStorage.setItem(key,mode);}catch(e){}apply();
+  });
+  window.addEventListener('storage',e=>{if(e.key===key||e.key===null){mode=valid(e.newValue)?e.newValue:'auto';apply();}});
+  if(system){if(system.addEventListener)system.addEventListener('change',apply);else if(system.addListener)system.addListener(apply);}
+  apply();document.addEventListener('DOMContentLoaded',apply);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@700;900&display=swap">
@@ -127,6 +150,10 @@ html{touch-action:manipulation;-webkit-text-size-adjust:100%}
 .sv-top{grid-column:1/-1;display:flex;align-items:center;gap:10px}.sv-top b{font-family:var(--f-display);font-size:18px}
 .credit{grid-column:1/-1;text-align:center;padding:22px 0 8px;font-size:12px;color:var(--muted);letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;gap:6px}
 .credit b{color:var(--ink);font-weight:700}.credit .num{color:var(--ink)}
+.theme-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.theme-options .btn{padding:8px 6px;min-height:40px}
+.theme-options .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:700}
+.theme-note{margin:8px 0 0;font-size:12px;color:var(--muted)}
 .sk{font-family:var(--f-mono);font-size:11px;letter-spacing:-1px;color:var(--accent)}
 .log{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto;font-size:12.5px}
 .log li{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
@@ -528,7 +555,8 @@ body{background-image:linear-gradient(var(--gridl) 1px,transparent 1px),linear-g
   </main>
   <main class="grid2" id="tab-save" hidden>
     <div class="sv-top"><button class="btn sm ghost" data-act="svback">← 返回</button><b>存档</b></div>
-    <div class="col"><section class="panel"><h2>存档<small>存在本机浏览器中</small></h2><div class="body" id="slots"></div></section></div>
+    <div class="col"><section class="panel"><h2>界面外观</h2><div class="body"><div class="theme-options" role="group" aria-label="界面主题"><button class="btn" type="button" data-theme-mode="auto" aria-pressed="true">跟随系统</button><button class="btn" type="button" data-theme-mode="light" aria-pressed="false">浅色</button><button class="btn" type="button" data-theme-mode="dark" aria-pressed="false">深色</button></div><p class="theme-note">选择会自动保留，下次打开沿用。</p></div></section>
+    <section class="panel"><h2>存档<small>存在本机浏览器中</small></h2><div class="body" id="slots"></div></section></div>
     <div class="col"><section class="panel"><h2>公司名称</h2><div class="body" id="rename"></div></section>
     <section class="panel"><h2>新开一局</h2><div class="body"><p class="mut" style="margin:0 0 10px">换一种出身或难度，从头经营。当前进度会保留在自动存档里，直到新的一局开始后被覆盖；想留住它，先存到上面的存档位。</p><button class="btn primary" data-act="new">新开一局</button></div></section>
     <section class="panel"><h2>备份与迁移</h2><div class="body" id="backup"></div></section></div>

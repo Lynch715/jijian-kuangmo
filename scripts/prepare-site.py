@@ -32,7 +32,7 @@ metadata = f'''<!doctype html>
 result = metadata + head + '</style>\n</head>\n<body>' + body + '\n</body>\n</html>\n'
 (root / 'index.html').write_text(result)
 assert result.split('<style>', 1)[1].split('</style>', 1)[0] == source.split('<style>', 1)[1].split('</style>', 1)[0]
-assert result.split('<script>', 1)[1].split('</script>', 1)[0] == source.split('<script>', 1)[1].split('</script>', 1)[0]
+assert re.findall(r'<script\b[^>]*>[\s\S]*?</script>', result, re.I) == re.findall(r'<script\b[^>]*>[\s\S]*?</script>', source, re.I)
 assert result.split('<body>', 1)[1].split('\n</body>', 1)[0] == body
 assert re.findall(viewport_pattern, result, re.I) == viewports
 print('已生成 index.html；原始样式、脚本、正文完全一致；仅保留源文件自带的唯一 viewport')
