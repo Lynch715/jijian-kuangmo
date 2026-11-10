@@ -387,7 +387,6 @@ svg.map .compass{stroke:var(--muted);stroke-width:1;fill:none}
 #set-cn,#rn-cn{width:100%;font:inherit;font-size:16px;font-weight:700;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:9px 10px}
 #set-cn:focus,#rn-cn:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .js-cn{font-style:normal}.cn-in{display:flex;flex-direction:column;gap:5px}.cn-in span{font-size:12px;color:var(--muted)}.cn-in b{color:var(--ink);font-weight:600}
-#bk-text{width:100%;min-height:90px;font-family:var(--f-mono);font-size:11px;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px;resize:vertical}
 @media (max-width:720px){.m-save{display:inline-flex;align-items:center;padding:4px 8px}.m-save svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round}
   .slot{grid-template-columns:minmax(0,1fr)}.slot .acts{justify-content:flex-start}}
 .skyline{margin-top:14px;border:1px solid var(--line);position:relative;overflow:hidden;background:var(--sky2)}
@@ -1159,9 +1158,8 @@ function act(a,b){
     if(a==='slotsave'){if(writeSlot(id,S))toast(`已保存到存档 ${id} · ${ym(S.t)}`,'good');else toast('保存失败：浏览器存储不可用','bad');renderSave();return;}
     if(a==='slotdel'){try{localStorage.removeItem(slotKey(id));}catch(e){}toast(`存档 ${id} 已删除`,'info');renderSave();return;}
     if(a==='slotload'){if(ex)loadState(ex.s,'存档 '+id);return;}}
-  if(a==='bkcopy'){const code=exportCode();const ta=$('#bk-text');if(ta)ta.value=code;
-    try{navigator.clipboard.writeText(code).then(()=>toast('存档码已复制','good'),()=>{if(ta){ta.focus();ta.select();}toast('已选中存档码，请手动复制','info');});}catch(e){if(ta){ta.focus();ta.select();}toast('已选中存档码，请手动复制','info');}return;}
-  if(a==='bkload'){const ta=$('#bk-text');const o=ta&&ta.value.trim()?importCode(ta.value):null;if(!o){$('#bk-msg').textContent='存档码无法识别，请检查是否完整';return;}loadState(o,'存档码');return;}
+  if(a==='bkjson')return exportJSON();
+  if(a==='bkjsonload'){$('#bk-json-file').click();return;}
   if(a==='bio'){S.queue.unshift({type:'bio'});render();return;}
   if(a==='biocopy'){const tx=bioText();try{navigator.clipboard.writeText(tx).then(()=>toast('传记已复制','good'),()=>toast('复制失败，请手动选择文字','bad'));}catch(e){toast('复制失败，请手动选择文字','bad');}return;}
   if(a==='tutok'){S.tut.seen[b.dataset.id]=1;if(b.dataset.id==='t8'){try{localStorage.setItem('dongda-tut','done');}catch(e){}}save();renderTut();return;}
@@ -1846,8 +1844,33 @@ function hasSlot(i){try{return localStorage.getItem(slotKey(i))!=null;}catch(e){
 function slotMeta(o){return {cn:o.cn||'东大建筑',era:o.era,y0:o.y0,t:o.t,bg:o.bg||'pri',dk:o.dk||'std',q:o.qual,mq:o.mq,cash:o.cash,lms:(o.lms||[]).length,ipo:!!o.ipo,over:!!o.over};}
 function readSlot(i){try{const r=localStorage.getItem(i==='auto'?KEY:slotKey(i));if(!r)return null;const o=JSON.parse(r);return o&&o.s?o:{s:o,at:null};}catch(e){return null;}}
 function writeSlot(i,o){try{localStorage.setItem(slotKey(i),JSON.stringify({at:Date.now(),s:o}));return true;}catch(e){return false;}}
-function exportCode(){try{return btoa(unescape(encodeURIComponent(JSON.stringify(S))));}catch(e){return '';}}
-function importCode(txt){try{const o=JSON.parse(decodeURIComponent(escape(atob(txt.trim()))));return migrate(o);}catch(e){return null;}}
+function exportJSON(){
+  let url;
+  try{const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json;charset=utf-8'});
+    url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;
+    a.download=`基建狂魔-${coName()}-${Y0()+Math.floor(S.t/12)}年${String(S.t%12+1).padStart(2,'0')}月.json`.replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_');
+    document.body.appendChild(a);a.click();a.remove();toast('JSON 存档已导出，请保管好备份文件','good');
+  }catch(e){toast('导出失败，请重试','bad');}
+  if(url)setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+async function readJSON(file){
+  const fail=x=>{const m=$('#bk-msg');if(m)m.textContent=x;toast(x,'bad');};
+  const status=$('#bk-msg');if(status)status.textContent='';
+  let o;
+  try{o=JSON.parse((await file.text()).replace(/^\uFEFF/,''));if(o&&o.s)o=o.s;
+    const arrays=['tenders','projects','recv','pms','pmMarket','bids','doneList','hist','log','queue','rivals','props'];
+    if(!o||![1,2,3,4,5].includes(o.v)||!Number.isInteger(o.t)||o.t<0||!Number.isInteger(o.qual)||o.qual<0||o.qual>3||!Number.isFinite(o.cash)||!Number.isFinite(o.loan)||!o.year||arrays.some(k=>!Array.isArray(o[k])))throw new Error();
+  }catch(e){fail('文件无法识别，请选择完整的《基建狂魔》JSON 存档');return;}
+  const keep=S,view={tab:UI.tab,open:UI.open,kp:UI.kp};let raw,checked=false;
+  try{raw=localStorage.getItem(KEY);checked=true;
+    const m=migrate(o);if(!m)throw new Error();S=m;S.queue=S.queue.filter(q=>q.type!=='setup');UI.open=null;UI.kp={};UI.tab='ops';render();
+    const data=JSON.stringify(S);localStorage.setItem(KEY,data);if(localStorage.getItem(KEY)!==data)throw new Error();
+    toast(`已读取 JSON 存档 · ${ym(S.t)}`,'good');
+  }catch(e){S=keep;Object.assign(UI,view);
+    if(checked){try{if(localStorage.getItem(KEY)!==raw){if(raw===null)localStorage.removeItem(KEY);else localStorage.setItem(KEY,raw);}}catch(x){}}
+    render();fail('读取失败，当前进度已保留；请检查文件或浏览器存储空间');
+  }
+}
 function loadState(o,label){const keep=S;const m=migrate(JSON.parse(JSON.stringify(o)));if(!m){S=keep;toast('存档无法读取','bad');return false;}
   S=m;S.queue=S.queue.filter(q=>q.type!=='setup');UI.open=null;UI.kp={};UI.tab='ops';save();render();toast(`已读取${label} · ${ym(S.t)}`,'good');return true;}
 function slotCard(id,o,label){
@@ -1862,9 +1885,9 @@ function slotCard(id,o,label){
 function renderSave(){
   const ri=$('#rn-cn');if(!ri||document.activeElement!==ri)$('#rename').innerHTML=`<label class="cn-in"><input id="rn-cn" maxlength="8" autocomplete="off" value="${esc(coName())}"><span>工商登记全称：<b id="rn-cnf">${esc(CO())}</b></span></label><div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="btn sm" data-act="rename">更名</button><span class="msg" id="rn-msg"></span></div>`;
   $('#slots').innerHTML='<div class="slots">'+slotCard('auto',{s:S,at:null},'自动存档')+SLOTS.map(i=>slotCard(i,readSlot(i),'存档 '+i)).join('')+'</div><p class="mut" style="font-size:12px;margin:8px 0 0">自动存档每次操作后都会更新。存档只保存在这台设备的这个浏览器里，清理浏览器数据会一并清除。</p>';
-  $('#backup').innerHTML=`<p class="mut" style="margin:0 0 8px;font-size:13px">换设备或换浏览器时，先复制存档码，再到新设备粘贴读取。</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="btn sm" data-act="bkcopy">复制当前存档码</button><button class="btn sm" data-act="bkload">用下方存档码读取</button></div>
-    <label class="field" for="bk-text">存档码<textarea id="bk-text" spellcheck="false" placeholder="在这里粘贴存档码"></textarea></label><div class="msg" id="bk-msg"></div>`;
+  $('#backup').innerHTML=`<p class="mut" style="margin:0 0 8px;font-size:13px">可下载 JSON 文件备份，在其他设备读取。读取会替换当前进度，建议先导出一份。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="btn sm primary" data-act="bkjson">导出 JSON 存档</button><button class="btn sm" data-act="bkjsonload">读取 JSON 存档</button><input type="file" id="bk-json-file" accept=".json,application/json" hidden></div>
+    <div class="msg" id="bk-msg" role="status"></div>`;
 }
 function migrate(o){if(!o||![1,2,3,4,5].includes(o.v))return null;if(o.v===1){S=o;o.mq=-1;o.mPerfSum=0;o.mPerfCount=0;o.deadRiv=[];initRivals();
   for(const t of o.tenders){t.line='fj';t.rivals=[];}for(const p of o.projects)p.line='fj';for(const b of o.bids){b.T.line='fj';b.T.rivals=[];}o.v=2;}
@@ -1883,6 +1906,7 @@ document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
 addEventListener('keydown',e=>{const b=e.target.closest&&e.target.closest('g[data-act]');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();act(b.dataset.act,b);}});
 document.addEventListener('input',e=>{if(e.target.id==='bid-ratio'){UI.ratio=+e.target.value;updateBid();}if(e.target.id==='set-cn'||e.target.id==='rn-cn'){const f=$(e.target.id==='set-cn'?'#set-cnf':'#rn-cnf');if(e.target.id==='set-cn')UI.setup.cn=e.target.value;if(f)f.textContent=cnFull(e.target.value);const mm=$(e.target.id==='set-cn'?'#set-cnm':'#rn-msg');if(mm)mm.textContent='';}});
 document.addEventListener('change',e=>{
+  if(e.target.id==='bk-json-file'){const f=e.target.files&&e.target.files[0];e.target.value='';if(f)readJSON(f);return;}
   if(e.target.id==='bid-pm'){UI.pm=+e.target.value||null;updateBid();}
   if(e.target.dataset.assign){const p=S.projects.find(x=>x.id===+e.target.dataset.assign);const pm=pmOf(+e.target.value);if(p&&pm&&pm.busy==null){p.pm=pm.id;pm.busy=p.id;log('info',`指派${pm.name}接手「${p.name}」`);toast(`${esc(pm.name)} 接手「${esc(p.name)}」`,'info');save();render();}}
 });
