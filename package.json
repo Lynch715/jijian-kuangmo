@@ -1,8 +1,9 @@
 {
   "name": "jijian-kuangmo",
   "private": true,
-  "description": "仅用于截图与海报重出；游戏本体不需要安装或构建",
+  "description": "单文件游戏的回归检查、截图与海报工具；游戏本体无需构建",
   "scripts": {
+    "test": "node --test scripts/check-audit-fixes.cjs",
     "capture": "node scripts/capture-game.cjs",
     "posters": "node scripts/render-posters.cjs"
   },

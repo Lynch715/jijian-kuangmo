@@ -63,7 +63,7 @@ const key = 'dongda-mvp-v1';
       assert.deepEqual(JSON.parse(await raw()), JSON.parse(before), '导出的文件必须能完整恢复');
       await settings();
       // 无效、残缺和会导致渲染异常的文件均不得损坏现有进度。
-      for (const [data, message] of [['{', '文件无法识别'], [JSON.stringify({ v: 5 }), '文件无法识别'], [JSON.stringify({ ...JSON.parse(before), pms: [null] }), '读取失败']]) {
+      for (const [data, message] of [['{', '文件无法识别'], [JSON.stringify({ v: 5 }), '文件无法识别'], [JSON.stringify({ ...JSON.parse(before), pms: [null] }), '文件无法识别']]) {
         await readFile({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from(data) });
         await page.waitForFunction(message => document.querySelector('#bk-msg').textContent.includes(message), message);
         assert.equal(await raw(), before);
