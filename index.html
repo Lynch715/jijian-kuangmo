@@ -702,6 +702,8 @@ function Y0(){return (S&&S.y0)||2026;}
 function ym(t){return (Y0()+Math.floor(t/12))+'年'+(t%12+1)+'月';}
 function ymS(t){return String((Y0()+Math.floor(t/12))%100).padStart(2,'0')+'/'+(t%12+1);}
 const pct=x=>(x*100).toFixed(1)+'%';
+// 地标门槛用实际分数判断，显示时向下取一位小数，避免进位到尚未达到的门槛。
+function formatCredit(rep=S.rep){return (Math.floor(rep*10)/10).toFixed(1);}
 
 let S=null,MR=null,PDEC=0;
 const UI={setup:{bg:'pri',dk:'std',era:'now',tut:(()=>{try{return localStorage.getItem('dongda-tut')!=='done';}catch(e){return true;}})()},open:null,ratio:.92,pm:null,tab:'ops',reg:'home',tf:'all'};
@@ -956,7 +958,11 @@ function tickProject(p){
   else{
     const r=Math.random();
     const sf=mac('safety',1);
-    if(r<(pm&&pm.tr==='speed'?.03:.06)){prog=false;cf=.25;log('bad',`「${p.name}」连续降雨停工一个月，窝工成本 ${fmt(plan*.25)}`);}
+    if(r<(pm&&pm.tr==='speed'?.03:.06)){
+      prog=false;cf=.25;
+      p.weatherStopMonths=(p.weatherStopMonths??0)+1;
+      log('bad',`「${p.name}」连续降雨停工一个月，窝工成本 ${fmt(plan*.25)}`);
+    }
     else if(r>=.06&&r<.10){const dv=p.V*R(.05,.12);p.V+=dv;addBudget(p,dv*R(.75,.95));p.dur+=1;plan=planCost(p);log('money',`「${p.name}」设计变更，合同额增加 ${fmt(dv)}，工期顺延1个月`);}
     else if(r>=.06&&r<.10+.06*sf){
       if(Math.random()<(11-sk)/14*(pm&&pm.tr==='safe'?.4:1)*(1-.1*subL('prefab'))*DF().risk){
@@ -993,7 +999,16 @@ function complete(p){
   if(p.kind!=='ppp')S.recv.push({id:S.uid++,pid:p.id,name:p.name+'·质保金',reg:p.reg,ck:p.ck,dev:p.dev,amount:p.V*.03,due:S.t+12});
   if(p.line==='sz'){S.mPerfSum+=p.V;S.mPerfCount++;}else{S.perfSum+=p.V;S.perfCount++;}
   const late=p.elapsed-p.dur;let msg=`「${p.name}」竣工验收。合同额 ${fmt(p.V)}，实际成本 ${fmt(p.cost)}，毛利 ${fmt(p.V-p.cost)}（${pct((p.V-p.cost)/p.V)}）`;
-  if(late<=0){const g=S.rep<85?2:1;S.rep+=g;msg+=`，按期交付 信用分+${g}`;}else{S.rep-=Math.round(late*1.5);msg+=`，延期${late}个月 信用分-${Math.round(late*1.5)}`;}
+  if(late<=0){
+    const gain=S.rep<70?3:S.rep<85?2:1;
+    S.rep+=gain;
+    msg+=`，按期交付 信用分+${gain}`;
+  }else{
+    const weatherOnly=late===1&&p.weatherStopMonths===1&&p.elapsed-p.done===1;
+    const penalty=weatherOnly?1:Math.round(late*1.5);
+    S.rep-=penalty;
+    msg+=`，延期${late}个月${weatherOnly?'（降雨停工）':''} 信用分-${penalty}`;
+  }
   const pm=pmOf(p.pm);
   if(pm){pm.busy=null;pm.exp++;if(Math.random()<.5&&pm.skill<10){pm.skill++;pm.sal=+(pm.sal+.3).toFixed(1);msg+=`；${pm.name}能力提升至${pm.skill}`;}
     if(late<=0){const sk=pm.skill,ab=pm.tr==='tech'?1.5:1;let tier=0;
@@ -1226,7 +1241,7 @@ function renderKPIs(){
     ['近12月营收',fmt(rev12()),`全国约第 ${natRank(rev12()).toLocaleString('zh-CN')} 位`,h.map(x=>x.rev||0),'var(--accent)'],
     ['企业估值',fmt(valuation()),S.ipo?'已上市 · 市值':'未上市',h.map(x=>x.val||0),'var(--blue)'],
     ['在手合同',fmt(backlog()),`${S.projects.length}个在建`,h.map(x=>x.bl),'var(--ink)'],
-    ['企业信用分',String(Math.round(S.rep)),S.rep>=80?'评标加分明显':S.rep>=60?'正常':'评标减分',h.map(x=>x.rep),S.rep<60?'var(--bad)':'var(--good)'],
+    ['企业信用分',formatCredit(),S.rep>=80?'评标加分明显':S.rep>=60?'正常':'评标减分',h.map(x=>x.rep),S.rep<60?'var(--bad)':'var(--good)'],
     ['材料价格指数',S.mat.toFixed(1),`环比 ${delta('mat')} · 基准100`,h.map(x=>x.mat),S.mat>105?'var(--bad)':'var(--ink)'],
     ['地产景气指数',S.market.toFixed(1),S.market<85?'下行：开发商风险高':S.market>105?'上行':'平稳',h.map(x=>x.market),S.market<85?'var(--bad)':'var(--ink)'],
   ];
@@ -1468,7 +1483,7 @@ function renderModal(){
     o=opt('a','收购',`支付 ${fmt(e.price)}：并入业绩 ${fmt(r.perf*.2)}（计2项）、接收1-2名项目经理${r.sz>=0&&S.mq<Math.min(r.sz,1)?'、承继市政'+QUALM[Math.min(r.sz,1)].name+'资质':''}${S.cash<e.price?'（现金不足）':''}`)+opt('b','放弃','保留现金');}
   if(e.type==='report'){const y=e.y,np=yProf(y)-(y.tax||0);t=`<span class="tag">年度报告</span>${e.year}年度经营报告`;
     const row=(a,b,cl)=>`<tr><td>${a}</td><td class="n ${cl||''}">${b}</td></tr>`;
-    c=`<table class="rep"><tbody>${row('营业收入（确认产值）',fmt(y.rev))}${row('工程成本',fmt(-y.cost))}${row('毛利',fmt(y.rev-y.cost),y.rev-y.cost>=0?'pos':'neg')}${row('管理费用及工资',fmt(-y.ovh))}${row('产业链子公司利润',fmt(y.sub||0),(y.sub||0)>=0?'pos':'neg')}${row('财务费用',fmt(-y.int))}${row('其他损益（罚款/签约/坏账等）',fmt(y.other))}${row('企业所得税（25%）',fmt(-(y.tax||0)))}${row('<b>净利润</b>','<b>'+fmt(np)+'</b>',np>=0?'pos':'neg')}${row('新签合同额',fmt(y.signed))}${row('年末现金 / 借款',fmt(e.cash)+' / '+fmt(e.loan))}${row('年末应收账款',fmt(e.recv))}${row('年末净资产',fmt(e.net))}${row('在手合同',fmt(e.bl))}${row('信用分',Math.round(e.rep))}${row('全国排名（按年营收）','约第 '+natRank(y.rev).toLocaleString('zh-CN')+' 位')}${row('行业在手合同排名','第'+e.rank+' / '+(S.rivals.length+1))}</tbody></table>`;
+    c=`<table class="rep"><tbody>${row('营业收入（确认产值）',fmt(y.rev))}${row('工程成本',fmt(-y.cost))}${row('毛利',fmt(y.rev-y.cost),y.rev-y.cost>=0?'pos':'neg')}${row('管理费用及工资',fmt(-y.ovh))}${row('产业链子公司利润',fmt(y.sub||0),(y.sub||0)>=0?'pos':'neg')}${row('财务费用',fmt(-y.int))}${row('其他损益（罚款/签约/坏账等）',fmt(y.other))}${row('企业所得税（25%）',fmt(-(y.tax||0)))}${row('<b>净利润</b>','<b>'+fmt(np)+'</b>',np>=0?'pos':'neg')}${row('新签合同额',fmt(y.signed))}${row('年末现金 / 借款',fmt(e.cash)+' / '+fmt(e.loan))}${row('年末应收账款',fmt(e.recv))}${row('年末净资产',fmt(e.net))}${row('在手合同',fmt(e.bl))}${row('信用分',formatCredit(e.rep))}${row('全国排名（按年营收）','约第 '+natRank(y.rev).toLocaleString('zh-CN')+' 位')}${row('行业在手合同排名','第'+e.rank+' / '+(S.rivals.length+1))}</tbody></table>`;
     if(e.gr){const g=e.gr,L=['营业收入 '+fmt(g.rev),'净利润 '+fmt(g.prof),'零重大安全事故'];c+=`<h3 style="margin-top:14px">董事会目标考核 · ${g.sc}/3</h3>`+L.map((l,i)=>`<div class="mr-row"><span class="${g.res[i]?'ok':'no'}">${g.res[i]?'✓':'✗'}</span><span class="grow">${l}</span></div>`).join('')+`<p class="${g.sc>=2?'pos':'neg'}" style="margin:8px 0 0;font-size:13px">${['董事会严厉问责，信用分 -5','董事会质询经营班子，信用分 -2','基本完成目标，信用分 +2','全面超额完成，董事会通报表彰，信用分 +5'][g.sc]}</p>`;}
     o=opt('ok','继续经营','进入新的一年');}
   if(e.type==='win'){t='<span class="tag">里程碑</span>取得特级资质';c=`用时 <b class="num">${S.t}</b> 个月，${coName()}跻身行业头部。业绩库 ${S.perfCount} 项，合计 ${fmt(S.perfSum)}。`;o=opt('ok','继续经营','冲击更高营收')+opt('bio','翻阅企业传记','回顾一路走来的历程');}
@@ -1483,7 +1498,7 @@ function renderSide(neg){
   $('#s-month').textContent=(S.t%12+1)+'月';$('#s-year').textContent=(Y0()+Math.floor(S.t/12))+'年';
   $('#s-chips').innerHTML=`<span class="chip">房建${QUAL[S.qual].name}</span><span class="chip">市政${S.mq<0?'—':QUALM[S.mq].name}</span>${S.ipo?'<span class="chip">已上市</span>':''}`;
   const F=forecast(),mn=Math.min(...F.map(f=>f.c));
-  $('#s-stats').innerHTML=`<div><span>现金</span><b>${fmt(S.cash)}</b></div><div><span>授信可用</span><b>${fmt(Math.max(0,limit()-S.loan))}</b></div><div><span>6个月最低现金</span><b class="${mn<0?'neg':''}">${fmt(mn)}</b></div><div><span>在手合同</span><b>${fmt(backlog())}</b></div><div><span>信用分</span><b>${Math.round(S.rep)}</b></div>`;
+  $('#s-stats').innerHTML=`<div><span>现金</span><b>${fmt(S.cash)}</b></div><div><span>授信可用</span><b>${fmt(Math.max(0,limit()-S.loan))}</b></div><div><span>6个月最低现金</span><b class="${mn<0?'neg':''}">${fmt(mn)}</b></div><div><span>在手合同</span><b>${fmt(backlog())}</b></div><div><span>信用分</span><b>${formatCredit()}</b></div>`;
   const nt=S.tenders.filter(T=>!isLocked(T)).length;$('#bd-ops').textContent=nt||'';
   const nr=Object.keys(REG).filter(k=>S.regions[k]==null&&lvMax()>=REG[k].need&&S.cash>=REG[k].fee).length;$('#bd-map').textContent=nr?nr+'可进入':'';
   $('#bd-corp').textContent=(!S.ipo&&ipoConds().every(x=>x[1]))?'可上市':'';
@@ -1709,7 +1724,7 @@ function renderSubs(){
 function renderLmBand(){
   const open=S.tenders.find(t=>t.lm);const p=S.pipe.slice().sort((a,b)=>a.t-b.t)[0];let h='';
   const reqs=(line,V,rep)=>{const TB=lineTbl(line),nq=TB.findIndex(x=>x.cap>=V);const okQ=lineLv(line)>=nq,okR=S.rep>=rep,okP=S.pms.some(m=>m.skill>=7);
-    return `<span class="${okQ?'ok':'no'}">${okQ?'✓':'✗'} ${lineName(line)}${TB[nq].name}</span><span class="${okR?'ok':'no'}">${okR?'✓':'✗'} 信用≥${rep}（现${Math.round(S.rep)}）</span><span class="${okP?'ok':'no'}">${okP?'✓':'✗'} 项目经理能力≥7</span>`;};
+    return `<span class="${okQ?'ok':'no'}">${okQ?'✓':'✗'} ${lineName(line)}${TB[nq].name}</span><span class="${okR?'ok':'no'}">${okR?'✓':'✗'} 信用≥${rep}（现${formatCredit()}）</span><span class="${okP?'ok':'no'}">${okP?'✓':'✗'} 项目经理能力≥7</span>`;};
   if(open)h=`<div class="lmthumb">${lmThumb(open.name,open.line,false)}</div><div><span class="chip lm">地标 · 正在招标</span><div class="big">${esc(open.name)}</div><div class="meta"><span>控制价 ${fmt(open.V)}</span><span>${open.dur}个月</span>${reqs(open.line,open.V,open.repReq)}</div></div><div class="cd">${open.expire-S.t+1}<small>个月内截标</small>${isLocked(open)?'':`<button class="btn sm primary" data-act="open" data-id="${open.id}" style="margin-top:6px">去算标</button>`}</div>`;
   else if(p)h=`<div class="lmthumb">${lmThumb(p.n,p.line,true)}</div><div><span class="chip q">城市重大项目预告</span><div class="big">${esc(p.n)}</div><div class="meta"><span>预计规模 ${fmt(p.V)}</span><span>${ym(p.t)}招标</span>${reqs(p.line,p.V,p.rep)}<button class="btn sm ghost" data-act="tab" data-tab="honor">全部规划</button></div></div><div class="cd">${p.t-S.t}<small>个月后招标</small></div>`;
   $('#lmband').innerHTML=h;$('#lmband').className=h?'lmband':'';
@@ -1920,6 +1935,7 @@ function validateState(o,recover=false){
   const tender=x=>x&&id(x)&&own(x)&&line(x)&&typeof x.name==='string'&&num(x.V,1)&&num(x.est,0)&&num(x.u,0)&&Number.isInteger(x.dur)&&num(x.dur,1,1200)&&[0,1,2,3].includes(x.needQ)&&num(x.n,1,1000)&&num(x.lowR,0)&&num(x.top,0)&&num(x.expire,0)&&(!x.rivals||Array.isArray(x.rivals))&&(x.kind==null||['epc','ppp'].includes(x.kind));
   for(const p of o.pms.concat(o.pmMarket))need(id(p)&&typeof p.name==='string'&&Number.isInteger(p.skill)&&num(p.skill,1,10)&&num(p.sal,0)&&num(p.exp,0)&&(p.tr==null||has(TRN,p.tr))&&(p.busy==null||p.busy==='bid'||Number.isInteger(p.busy)));
   for(const p of o.projects)need(id(p)&&own(p)&&line(p)&&typeof p.name==='string'&&num(p.V,1)&&num(p.C,0)&&Number.isInteger(p.dur)&&num(p.dur,1,1200)&&num(p.done,0,p.dur)&&num(p.elapsed,0)&&num(p.cost,0)&&num(p.billed,0)&&num(p.claimed,0)&&num(p.advLeft,0)&&num(p.stopFor,0)&&(p.costLeft==null||num(p.costLeft,0))&&(p.kind==null||['epc','ppp'].includes(p.kind)));
+  for(const p of o.projects)if(p.weatherStopMonths!=null)need(Number.isInteger(p.weatherStopMonths)&&num(p.weatherStopMonths,0,Math.max(0,p.elapsed-p.done)));
   need(o.tenders.every(tender)&&o.bids.every(b=>tender(b.T)&&num(b.ratio,.8,1)&&num(b.bond,0)));
   const managers=new Map(o.pms.map(p=>[p.id,p]));
   for(const p of o.projects)need(p.pm==null||managers.has(p.pm));

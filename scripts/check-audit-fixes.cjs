@@ -68,3 +68,64 @@ test('legacy v5 checkpoint loads, preserves money and continues; synthetic v1–
     if(v===1){for(const k of ['mq','mPerfSum','mPerfCount','rivals','deadRiv'])delete s[k];for(const t of s.tenders){delete t.line;delete t.rivals;}}
     const migrated=g.prepareState(s);assert.equal(migrated.v,5);assert.equal(migrated.cash,s.cash);}
 });
+
+test('on-time delivery helps credit recover below 70 and respects both reward boundaries',()=>{
+  for(const [credit,reward] of [[60,3],[69.9,3],[70,2],[84.9,2],[85,1]]){
+    const {g}=engine(),s=g.S;
+    s.rep=credit;
+    const p=project(s,{dur:4,done:4,elapsed:4,billed:1200,pm:null});
+    s.projects=[p];
+    g.complete(p);
+    near(s.rep,credit+reward);
+    assert.ok(s.log.some(entry=>entry.x.includes(`按期交付 信用分+${reward}`)));
+  }
+});
+
+test('only a one-month rain delay receives the lower penalty, including after loading a save',()=>{
+  const scenarios=[
+    {rain:1,other:0,oldDelay:0,penalty:1},
+    {rain:2,other:0,oldDelay:0,penalty:3},
+    {rain:1,other:1,oldDelay:0,penalty:3},
+    {rain:0,other:0,oldDelay:1,penalty:2},
+  ];
+  for(const {rain,other,oldDelay,penalty} of scenarios){
+    const e=engine(),{g}=e,s=g.S;
+    const p=project(s,{dur:4,done:3,elapsed:3+oldDelay,billed:900,pm:null,stopFor:other});
+    s.projects=[p];
+    e.random(.01);
+    for(let month=0;month<rain+other;month++)g.tickProject(p);
+    g.S=g.prepareState(s);
+    e.random(.5);
+    g.tickProject(g.S.projects[0]);
+    assert.equal(g.S.rep,70-penalty);
+    assert.ok(g.S.log.some(entry=>entry.x.includes(`信用分-${penalty}`)));
+    assert.equal(g.S.projects.length,0);
+  }
+});
+
+test('a major accident still deducts 10 immediately and two months of non-weather delay deduct 3 more',()=>{
+  const e=engine(),{g}=e,s=g.S;
+  const pm=s.pms[0];
+  pm.skill=4;
+  pm.tr=null;
+  const p=project(s,{dur:4,done:2,elapsed:2,billed:600});
+  s.projects=[p];
+  e.random(.11);
+  g.tickProject(p);
+  assert.equal(s.rep,60);
+  assert.equal(p.stopFor,2);
+  e.random(.5);
+  for(let month=0;month<3;month++)g.tickProject(p);
+  assert.equal(s.rep,57);
+  assert.equal(s.projects.length,0);
+});
+
+test('the displayed credit does not round into an unmet landmark tender requirement',()=>{
+  const {g}=engine(),s=g.S;
+  const tender={reg:'home',line:'fj',needQ:0,repReq:72};
+  for(const [credit,display,locked] of [[71.6,'71.6',true],[71.99,'71.9',true],[72,'72.0',false]]){
+    s.rep=credit;
+    assert.equal(g.formatCredit(),display);
+    assert.equal(Boolean(g.isLocked(tender)),locked);
+  }
+});
