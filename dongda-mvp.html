@@ -685,6 +685,7 @@ function ymS(t){return String((Y0()+Math.floor(t/12))%100).padStart(2,'0')+'/'+(
 const pct=x=>(x*100).toFixed(1)+'%';
 // 地标门槛用实际分数判断，显示时向下取一位小数，避免进位到尚未达到的门槛。
 function formatCredit(rep=S.rep){return (Math.floor(rep*10)/10).toFixed(1);}
+function creditChange(delta){return delta===0?'信用分不变':'信用分 '+(delta>0?'+':'')+delta;}
 
 let S=null,MR=null,PDEC=0;
 const UI={setup:{bg:'pri',dk:'std',era:'now',tut:(()=>{try{return localStorage.getItem('dongda-tut')!=='done';}catch(e){return true;}})()},open:null,ratio:.92,pm:null,tab:'ops',reg:'home',tf:'all'};
@@ -693,8 +694,8 @@ function log(k,x,t=S.t){S.log.unshift({t,k,x});if(S.log.length>150)S.log.pop();i
 function toast(x,k){const el=document.getElementById('toasts');if(!el)return;const d=document.createElement('div');d.className='toast '+(k||'good');d.innerHTML=x;el.appendChild(d);
   while(el.children.length>4)el.firstChild.remove();setTimeout(()=>{d.classList.add('out');setTimeout(()=>d.remove(),320);},2600);}
 function seal(t,sub){const el=document.getElementById('seal');if(!el)return;el.innerHTML=`<div><div class="sq">${t}</div><p>${sub}</p></div>`;el.hidden=false;clearTimeout(seal.tm);seal.tm=setTimeout(()=>{el.hidden=true;},1700);}
-function newMR(){return {t:S.t,t1:S.t,c0:S.cash,c1:S.cash,col:0,adv:0,ppp:0,sub:0,cost:0,ovh:0,int:0,fin:0,tax:0,rev:0,prof:0,bids:[],done:[],lit:[],ach:[],ev:[]};}
-function mergeMR(a,b){const o={...a};for(const k of ['col','adv','ppp','sub','cost','ovh','int','fin','tax','rev','prof'])o[k]=(a[k]||0)+(b[k]||0);for(const k of [])o[k]=a[k]+b[k];for(const k of ['bids','done','lit','ach','ev'])o[k]=a[k].concat(b[k]);o.c1=b.c1;o.t1=b.t1;return o;}
+function newMR(){return {t:S.t,t1:S.t,c0:S.cash,c1:S.cash,rep0:S.rep,col:0,adv:0,ppp:0,sub:0,cost:0,ovh:0,int:0,fin:0,tax:0,rev:0,prof:0,bids:[],done:[],lit:[],ach:[],ev:[]};}
+function mergeMR(a,b){const o={...a};for(const k of ['col','adv','ppp','sub','cost','ovh','int','fin','tax','rev','prof'])o[k]=(a[k]||0)+(b[k]||0);for(const k of ['bids','done','lit','ach','ev'])o[k]=a[k].concat(b[k]);o.c1=b.c1;o.rep1=b.rep1;o.t1=b.t1;return o;}
 function newPM(lo,hi){const skill=clamp(RI(lo,hi),1,10);const tr=pickTr();return {id:S.uid++,name:pick(SUR)+pick(GIV),skill,tr,sal:+(.6+skill*.25+(tr?.3:0)).toFixed(1),busy:null,exp:0};}
 function newDev(){const used=new Set(S.devs.map(d=>d.name));const pool=DEVN.filter(n=>!used.has(n)&&!(S.deadDev||[]).includes(n));const name=pool.length?pick(pool):pick(DIST)+'置业';return {id:S.uid++,name,h:R(.45,.95)};}
 function devOf(id){return S.devs.find(d=>d.id===id);}
@@ -980,16 +981,12 @@ function complete(p){
   if(p.kind!=='ppp')S.recv.push({id:S.uid++,pid:p.id,name:p.name+'·质保金',reg:p.reg,ck:p.ck,dev:p.dev,amount:p.V*.03,due:S.t+12});
   if(p.line==='sz'){S.mPerfSum+=p.V;S.mPerfCount++;}else{S.perfSum+=p.V;S.perfCount++;}
   const late=p.elapsed-p.dur;let msg=`「${p.name}」竣工验收。合同额 ${fmt(p.V)}，实际成本 ${fmt(p.cost)}，毛利 ${fmt(p.V-p.cost)}（${pct((p.V-p.cost)/p.V)}）`;
-  if(late<=0){
-    const gain=S.rep<70?3:S.rep<85?2:1;
-    S.rep+=gain;
-    msg+=`，按期交付 信用分+${gain}`;
-  }else{
-    const weatherOnly=late===1&&p.weatherStopMonths===1&&p.elapsed-p.done===1;
-    const penalty=weatherOnly?1:Math.round(late*1.5);
-    S.rep-=penalty;
-    msg+=`，延期${late}个月${weatherOnly?'（降雨停工）':''} 信用分-${penalty}`;
-  }
+  const rainDelay=Math.min(Math.max(0,late),p.weatherStopMonths??0);
+  const creditLate=late-rainDelay;
+  const deliveryCredit=late<=0?(S.rep<70?3:S.rep<85?2:1):creditLate===0?0:-Math.round(creditLate*1.5);
+  S.rep+=deliveryCredit;
+  const delivery=late<=0?'按期交付':`延期${late}个月${rainDelay?`（${rainDelay}个月降雨停工免扣）`:''}`;
+  msg+=`，${delivery}，${creditChange(deliveryCredit)}`;
   const pm=pmOf(p.pm);
   if(pm){pm.busy=null;pm.exp++;if(Math.random()<.5&&pm.skill<10){pm.skill++;pm.sal=+(pm.sal+.3).toFixed(1);msg+=`；${pm.name}能力提升至${pm.skill}`;}
     if(late<=0){const sk=pm.skill,ab=pm.tr==='tech'?1.5:1;let tier=0;
@@ -1000,7 +997,7 @@ function complete(p){
   {const rk=p.reg||'home';const b0=litN(rk);S.regPerf[rk]=(S.regPerf[rk]||0)+p.V;const b1=litN(rk);
    if(b1>b0){S.newLit=S.newLit||{};S.newLit[rk]={from:b0,to:b1,t:S.t};if(MR)MR.lit.push({k:REG[rk].name,n:b1-b0,tot:b1,all:cellN(rk)});log('good',`${REG[rk].name}点亮 +${b1-b0} 格（${b1}/${cellN(rk)}）`);}}
   if(p.lm){S.lms.unshift({t:S.t,name:p.name,V:p.V,line:p.line});S.rep+=5;chron(`地标「${p.name}」竣工交付，江州的天际线上有了${coShort()}的名字`);}
-  if(MR)MR.done.push({n:p.name,V:p.V,gm:(p.V-p.cost)/p.V,lm:!!p.lm,late});
+  if(MR)MR.done.push({n:p.name,V:p.V,gm:(p.V-p.cost)/p.V,lm:!!p.lm,late,rainDelay,deliveryCredit});
   log(p.V-p.cost>=0?'good':'bad',msg);
   if(S.doneList.length>200)S.doneList.length=200;
   S.doneList.unshift({line:p.line,name:p.name,V:p.V,t:S.t,gm:(p.V-p.cost)/p.V,lm:!!p.lm});
@@ -1056,7 +1053,7 @@ function advance(){
   S.market=clamp(S.market+mac('mkt',0)+R(-4,3.5)+(95-S.market)*.03,50,130);
   const stars=S.pms.filter(p=>p.skill>=7);
   if(stars.length&&Math.random()<.045){const p=pick(stars);S.queue.push({type:'poach',pmid:p.id,offer:+(p.sal+R(1,2.2)).toFixed(1)});}
-  S.rep=clamp(S.rep+(75-S.rep)*.012,0,100);
+  S.rep=clamp(S.rep+(75-S.rep)*(S.rep<75?.04:.012),0,100);
   if(S.cash<0){
     const need=-S.cash,room=limit()-S.loan;
     if(room>0){const b=Math.min(room,Math.ceil(need/50)*50);S.loan+=b;S.cash+=b;MR.fin+=b;log('bad',`现金不足，自动动用银行授信 ${fmt(b)}`);}
@@ -1080,12 +1077,13 @@ function advance(){
   recordHist();checkAch(S.t-1);
   if(S.t%12===0&&!S.over){const y=S.year;const pre=yProf(y),tax=pre>0?pre*.25:0;y.tax=tax;const np=pre-tax;if(tax>0){S.taxDue=(S.taxDue||[]).concat([1,2,3,4].map(i=>({t:S.t+i-1,a:tax/4})));log('money',`${Y0()+S.t/12-1}年度企业所得税 ${fmt(tax)}，分4个月缴纳，每月 ${fmt(tax/4)}`);}S.years.push({y:Y0()+S.t/12-1,rev:y.rev,prof:np,signed:y.signed,net:net(),rank:natRank(y.rev)});
     if(np>0&&S.yMin<70&&!S.ms.storm){S.ms.storm=S.t;}S.yMin=S.market;
-    let gr=null;if(S.goal){const g=S.goal,res=[y.rev>=g.rev,np>=g.prof,!(y.acc>0)],sc=res.filter(Boolean).length;gr={...g,res,sc};
-      const rp=[-5,-2,2,5][sc];S.rep=clamp(S.rep+rp,0,100);S.goalStreak=sc===3?(S.goalStreak||0)+1:0;
+    let gr=null;if(S.goal){const g=S.goal,res=[y.rev>=g.rev,np>=g.prof,!(y.acc>0)],sc=res.filter(Boolean).length;
+      const rp=sc===1&&res[2]?0:[-5,-2,2,5][sc];gr={...g,res,sc,rp};
+      S.rep=clamp(S.rep+rp,0,100);S.goalStreak=sc===3?(S.goalStreak||0)+1:0;
       if(sc===3)chron(`超额完成${Y0()+g.y}年度董事会目标，获董事会通报表彰`);if(sc===0)chron(`${Y0()+g.y}年度目标全面落空，董事会问责经营班子`);
-      log(sc>=2?'good':'bad',`年度目标完成 ${sc}/3，信用分 ${rp>0?'+':''}${rp}`);}
+      log(rp>0?'good':rp<0?'bad':'info',`年度目标完成 ${sc}/3，${creditChange(rp)}${rp===0?'（全年无重大安全事故）':''}`);}
     S.queue.push({type:'report',gr,year:Y0()+S.t/12-1,y:{...y},cash:S.cash,net:net(),recv:recvSum(),loan:S.loan,bl:backlog(),rep:S.rep,rank:myRank()});S.year={rev:0,cost:0,ovh:0,int:0,other:0,signed:0,sub:0,acc:0};for(const r of S.rivals)r.signedY=0;setGoal();}
-  checkAch(S.t-1);S.monthBase=monthBase();MR.c1=S.cash;MR.t1=S.t-1;MR.rev=S.mRev;MR.prof=S.mProf;if(!S.over)S.queue.unshift({type:'month',r:MR});MR=null;
+  checkAch(S.t-1);S.monthBase=monthBase();MR.c1=S.cash;MR.rep1=S.rep;MR.t1=S.t-1;MR.rev=S.mRev;MR.prof=S.mProf;if(!S.over)S.queue.unshift({type:'month',r:MR});MR=null;
   UI.open=null;save();render();
 }
 
@@ -1155,7 +1153,7 @@ function act(a,b){
   if(a==='hire'){const c=S.pmMarket.find(x=>x.id===+b.dataset.id);if(!c||S.cash<c.sal*3)return;S.cash-=c.sal*3;S.year.other-=c.sal*3;S.pms.push(c);S.pmMarket=S.pmMarket.filter(x=>x!==c);log('info',`签约项目经理${c.name}（能力${c.skill}），签约费 ${fmt(c.sal*3)}`);toast(`${esc(c.name)} 加入${esc(coShort())} · 能力 <b>${c.skill}</b>`,'good');}
   if(a==='fire'){const p=pmOf(+b.dataset.id);if(!p||p.busy!=null)return;S.cash-=p.sal*2;S.year.other-=p.sal*2;S.pms=S.pms.filter(x=>x!==p);log('info',`与${p.name}解约，补偿 ${fmt(p.sal*2)}`);toast(`已与${esc(p.name)}解约`,'info');}
   if(a==='up')return upgrade(b.dataset.line||'fj');
-  if(a==='adv3'){let agg=null;for(let i=0;i<3;i++){if(S.over||S.queue.length)break;advance();const q=S.queue;if(q.length&&q[0].type==='month'){const r=q.shift().r;agg=agg?mergeMR(agg,r):r;}if(q.length)break;}if(agg&&!S.over)S.queue.unshift({type:'month',r:agg});render();return;}
+  if(a==='adv3'){let agg=null;for(let i=0;i<3;i++){if(S.over||S.queue.length)break;advance();const q=S.queue;if(q.length&&q[0].type==='month'){const r=q.shift().r;agg=agg?mergeMR(agg,r):r;}if(q.length)break;}if(agg&&!S.over){S.queue.unshift({type:'month',r:agg});save();}render();return;}
   if(a==='borrow'){const v=+b.dataset.v;const room=limit()-S.loan;const x=Math.min(v,room);if(x<=0)return;S.loan+=x;S.cash+=x;toast(`银行放款 <b>+${fmt(x)}</b>`,'money');log('money',`银行贷款 ${fmt(x)}（年化${(rate()*1200).toFixed(1)}%）`);}
   if(a==='repay'){const x=Math.min(+b.dataset.v,S.loan,Math.max(0,S.cash));if(x<=0)return;S.loan-=x;S.cash-=x;log('money',`归还银行贷款 ${fmt(x)}`);toast(`已还款 <b>${fmt(x)}</b>`,'money');}
   if(a==='sell'){const x=S.props.find(p=>p.id===+b.dataset.id);if(!x)return;const v=x.book*S.market/100*.85;S.cash+=v;S.year.other+=v-x.book;S.props=S.props.filter(p=>p!==x);log('money',`出售「${x.name}」，回笼现金 ${fmt(v)}`);toast(`房产出售 <b>+${fmt(v)}</b>`,'money');}
@@ -1426,15 +1424,22 @@ function renderModal(){
   const opt=(k,b,s)=>`<button class="opt" data-act="choice" data-opt="${k}"><b>${b}</b><span>${s}</span></button>`;
   if(!validEvent(e)||e.type==='recovery'){m.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h2>存档事件恢复</h2><div class="cnt">检测到无法识别的待处理事件，已停止执行该事件。可先查看存档并导出备份，再继续经营。</div><div class="opts">${opt('save','查看存档','检查进度与备份')+opt('ok','继续经营','跳过无法处理的事件')}</div></div>`;return;}
   if(e.type==='month'){const r=e.r,dc=r.c1-r.c0;
+    const repDelta=Number.isFinite(r.rep0)&&Number.isFinite(r.rep1)?(Math.floor(r.rep1*10)-Math.floor(r.rep0*10))/10:null;
+    const repSummary=repDelta==null?'':`<span>期末信用分 <b class="num" style="font-size:13px">${formatCredit(r.rep1)}</b>${repDelta?`（${repDelta>0?'+':''}${repDelta.toFixed(1)}）`:''}</span>`;
     const flows=[['工程回款',r.col],['预付款',r.adv],['PPP回购',r.ppp],['子公司',r.sub],['银行融资',r.fin],['工程成本',-r.cost],['管理与工资',-r.ovh],['利息',-r.int],['所得税',-(r.tax||0)]];
     const known=sum(flows,f=>f[1]);flows.push(['其他',dc-known]);const fl=flows.filter(f=>Math.abs(f[1])>=.5);const mx=Math.max(1,...fl.map(f=>Math.abs(f[1])));
     const per=r.t1>r.t?`${ym(r.t)} — ${ym(r.t1)}`:ym(r.t);
-    let c=`<div class="mrep"><div class="hero2"><span>期末现金</span><b class="count" data-from="${r.c0}" data-to="${r.c1}">${fmt(r.c1)}</b><em class="${dc>=0?'pos':'neg'}">${dc>=0?'+':''}${fmt(dc)}</em><span>确认产值 ${fmt(r.rev)} · 净利润 <b class="num ${r.prof>=0?'pos':'neg'}" style="font-size:13px">${fmt(r.prof)}</b></span></div>
+    let c=`<div class="mrep"><div class="hero2"><span>期末现金</span><b class="count" data-from="${r.c0}" data-to="${r.c1}">${fmt(r.c1)}</b><em class="${dc>=0?'pos':'neg'}">${dc>=0?'+':''}${fmt(dc)}</em><span>确认产值 ${fmt(r.rev)} · 净利润 <b class="num ${r.prof>=0?'pos':'neg'}" style="font-size:13px">${fmt(r.prof)}</b></span>${repSummary}</div>
       <div class="wf">${fl.map(f=>`<span>${f[0]}</span><div class="wb"><i style="left:${f[1]>=0?50:50-Math.abs(f[1])/mx*50}%;width:${Math.abs(f[1])/mx*50}%;background:${f[1]>=0?'var(--good)':'var(--bad)'}"></i></div><span class="v ${f[1]>=0?'pos':'neg'}">${f[1]>=0?'+':''}${fmt(f[1])}</span>`).join('')}</div>`;
     const wins=r.bids.filter(x=>x.w),loss=r.bids.filter(x=>!x.w);
     if(wins.length)c+=`<h3>中标通知</h3>`+wins.map((x,i)=>noticeHTML(x,i)).join('');
     if(loss.length)c+=`<h3>未中标</h3>`+loss.map((x,i)=>`<div class="mr-row"><span class="stamp${x.w?'':' lost'}" style="--i:${i}">${x.w?'中标':'未中'}</span><span class="grow">${x.lm?'<span class="chip lm">地标</span> ':''}${esc(x.n)}<span class="sub mut">${x.w?`合同额 ${fmt(x.V)} · 下浮 ${pct(1-x.r)}`:`${esc(x.wn)} 以下浮 ${pct(1-x.wr)} 中标，你报 ${pct(1-x.r)}`}</span></span></div>`).join('');
-    if(r.done.length)c+=`<h3>竣工交付</h3>`+r.done.map(x=>`<div class="mr-row">${thumb(x.n,null,x.lm?'sk-lm':'sk-b',40,30)}<span class="grow">${x.lm?'<span class="chip lm">地标</span> ':''}${esc(x.n)}<span class="sub mut">合同额 ${fmt(x.V)}${x.late>0?` · 延期${x.late}个月`:' · 按期'}</span></span><b class="num ${x.gm>=0?'pos':'neg'}">${pct(x.gm)}</b></div>`).join('');
+    if(r.done.length)c+=`<h3>竣工交付</h3>`+r.done.map(x=>{
+      const rain=Number.isInteger(x.rainDelay)&&x.rainDelay>0?`（${x.rainDelay}个月降雨停工免扣）`:'';
+      const delivery=x.late>0?`延期${x.late}个月${rain}`:'按期';
+      const credit=Number.isFinite(x.deliveryCredit)?' · '+creditChange(x.deliveryCredit):'';
+      return `<div class="mr-row">${thumb(x.n,null,x.lm?'sk-lm':'sk-b',40,30)}<span class="grow">${x.lm?'<span class="chip lm">地标</span> ':''}${esc(x.n)}<span class="sub mut">合同额 ${fmt(x.V)} · ${delivery}${credit}</span></span><b class="num ${x.gm>=0?'pos':'neg'}">${pct(x.gm)}</b></div>`;
+    }).join('');
     if(r.lit.length||r.ach.length)c+=`<h3>里程碑</h3><div class="mr-chips">${r.lit.map(x=>`<span class="chip q">${x.k}点亮 +${x.n}格</span>`).join('')}${r.ach.map(x=>`<span class="chip lm">★ ${esc(x)}</span>`).join('')}</div>`;
     const ev=r.ev.filter(x=>!/^中标「|未中标|竣工验收|点亮 \+|达成成就|^递交/.test(x.x)).slice(-8);
     if(ev.length)c+=`<h3>本月动态</h3>`+ev.map(x=>`<div class="mr-row"><span class="grow ${x.k==='bad'?'neg':x.k==='good'?'pos':''}" style="font-size:12.5px">${esc(x.x)}</span></div>`).join('');
@@ -1465,7 +1470,10 @@ function renderModal(){
   if(e.type==='report'){const y=e.y,np=yProf(y)-(y.tax||0);t=`<span class="tag">年度报告</span>${e.year}年度经营报告`;
     const row=(a,b,cl)=>`<tr><td>${a}</td><td class="n ${cl||''}">${b}</td></tr>`;
     c=`<table class="rep"><tbody>${row('营业收入（确认产值）',fmt(y.rev))}${row('工程成本',fmt(-y.cost))}${row('毛利',fmt(y.rev-y.cost),y.rev-y.cost>=0?'pos':'neg')}${row('管理费用及工资',fmt(-y.ovh))}${row('产业链子公司利润',fmt(y.sub||0),(y.sub||0)>=0?'pos':'neg')}${row('财务费用',fmt(-y.int))}${row('其他损益（罚款/签约/坏账等）',fmt(y.other))}${row('企业所得税（25%）',fmt(-(y.tax||0)))}${row('<b>净利润</b>','<b>'+fmt(np)+'</b>',np>=0?'pos':'neg')}${row('新签合同额',fmt(y.signed))}${row('年末现金 / 借款',fmt(e.cash)+' / '+fmt(e.loan))}${row('年末应收账款',fmt(e.recv))}${row('年末净资产',fmt(e.net))}${row('在手合同',fmt(e.bl))}${row('信用分',formatCredit(e.rep))}${row('全国排名（按年营收）','约第 '+natRank(y.rev).toLocaleString('zh-CN')+' 位')}${row('行业在手合同排名','第'+e.rank+' / '+(S.rivals.length+1))}</tbody></table>`;
-    if(e.gr){const g=e.gr,L=['营业收入 '+fmt(g.rev),'净利润 '+fmt(g.prof),'零重大安全事故'];c+=`<h3 style="margin-top:14px">董事会目标考核 · ${g.sc}/3</h3>`+L.map((l,i)=>`<div class="mr-row"><span class="${g.res[i]?'ok':'no'}">${g.res[i]?'✓':'✗'}</span><span class="grow">${l}</span></div>`).join('')+`<p class="${g.sc>=2?'pos':'neg'}" style="margin:8px 0 0;font-size:13px">${['董事会严厉问责，信用分 -5','董事会质询经营班子，信用分 -2','基本完成目标，信用分 +2','全面超额完成，董事会通报表彰，信用分 +5'][g.sc]}</p>`;}
+    if(e.gr){const g=e.gr,L=['营业收入 '+fmt(g.rev),'净利润 '+fmt(g.prof),'零重大安全事故'];
+      const rp=Number.isFinite(g.rp)?g.rp:[-5,-2,2,5][g.sc];
+      const result=rp===0?'财务目标未达成，全年无重大安全事故':['董事会严厉问责','董事会质询经营班子','基本完成目标','全面超额完成，董事会通报表彰'][g.sc];
+      c+=`<h3 style="margin-top:14px">董事会目标考核 · ${g.sc}/3</h3>`+L.map((l,i)=>`<div class="mr-row"><span class="${g.res[i]?'ok':'no'}">${g.res[i]?'✓':'✗'}</span><span class="grow">${l}</span></div>`).join('')+`<p class="${rp>0?'pos':rp<0?'neg':'mut'}" style="margin:8px 0 0;font-size:13px">${result}，${creditChange(rp)}</p>`;}
     o=opt('ok','继续经营','进入新的一年');}
   if(e.type==='win'){t='<span class="tag">里程碑</span>取得特级资质';c=`用时 <b class="num">${S.t}</b> 个月，${coName()}跻身行业头部。业绩库 ${S.perfCount} 项，合计 ${fmt(S.perfSum)}。`;o=opt('ok','继续经营','冲击更高营收')+opt('bio','翻阅企业传记','回顾一路走来的历程');}
   if(e.type==='over'){t='<span class="tag">破产</span>资金链断裂';c=`坚持了 <b class="num">${S.t}</b> 个月，最高资质 ${QUAL[S.qual].name}，累计业绩 ${fmt(S.perfSum)}。账上的利润救不了断掉的现金流。`;o=opt('c','翻阅企业传记','看看'+coShort()+'这一路')+opt('a','重新开局','选择时代、出身和难度，重新开始')+opt('b','读取存档或 JSON','恢复之前保存的进度');}

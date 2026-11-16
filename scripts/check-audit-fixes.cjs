@@ -77,15 +77,16 @@ test('on-time delivery helps credit recover below 70 and respects both reward bo
     s.projects=[p];
     g.complete(p);
     near(s.rep,credit+reward);
-    assert.ok(s.log.some(entry=>entry.x.includes(`按期交付 信用分+${reward}`)));
+    assert.ok(s.log.some(entry=>entry.x.includes(`按期交付，信用分 +${reward}`)));
   }
 });
 
-test('only a one-month rain delay receives the lower penalty, including after loading a save',()=>{
+test('only recorded rain months are exempt from delay penalties, including after loading a save',()=>{
   const scenarios=[
-    {rain:1,other:0,oldDelay:0,penalty:1},
-    {rain:2,other:0,oldDelay:0,penalty:3},
-    {rain:1,other:1,oldDelay:0,penalty:3},
+    {rain:1,other:0,oldDelay:0,penalty:0},
+    {rain:2,other:0,oldDelay:0,penalty:0},
+    {rain:1,other:1,oldDelay:0,penalty:2},
+    {rain:1,other:2,oldDelay:0,penalty:3},
     {rain:0,other:0,oldDelay:1,penalty:2},
   ];
   for(const {rain,other,oldDelay,penalty} of scenarios){
@@ -98,7 +99,8 @@ test('only a one-month rain delay receives the lower penalty, including after lo
     e.random(.5);
     g.tickProject(g.S.projects[0]);
     assert.equal(g.S.rep,70-penalty);
-    assert.ok(g.S.log.some(entry=>entry.x.includes(`信用分-${penalty}`)));
+    assert.ok(g.S.log.some(entry=>entry.x.includes(penalty?`信用分 -${penalty}`:'信用分不变')));
+    if(rain)assert.ok(g.S.log.some(entry=>entry.x.includes(`${rain}个月降雨停工免扣`)));
     assert.equal(g.S.projects.length,0);
   }
 });
@@ -118,6 +120,52 @@ test('a major accident still deducts 10 immediately and two months of non-weathe
   for(let month=0;month<3;month++)g.tickProject(p);
   assert.equal(s.rep,57);
   assert.equal(s.projects.length,0);
+});
+
+test('credit can recover from 60 to the landmark threshold despite missed financial goals',()=>{
+  const e=engine(),{g}=e,s=g.S;
+  const tender={reg:'home',line:'fj',needQ:0,repReq:72};
+  s.rep=60;
+  e.random(.5);
+  for(let month=1;month<=40;month++){
+    g.advance();
+    if(month%12===0){
+      const report=s.queue.find(event=>event.type==='report');
+      assert.equal(report.gr.sc,1);
+      assert.equal(report.gr.rp,0);
+      s.queue=[report];
+      g.renderModal();
+      assert.match(e.get('#modal').innerHTML,/全年无重大安全事故，信用分不变/);
+    }
+    assert.equal(g.isLocked(tender),month<40);
+    s.queue=[];
+  }
+
+  const f=engine(),q=f.g.S;
+  q.t=11;q.rep=60;q.year.acc=1;
+  f.random(.5);
+  f.g.advance();
+  const report=q.queue.find(event=>event.type==='report');
+  assert.equal(report.gr.rp,-5);
+  near(q.rep,55.6);
+});
+
+test('a three-month credit receipt retains the full change after reload and old receipts still render',()=>{
+  const e=engine(),{g}=e;
+  g.S.rep=60;
+  e.random(.5);
+  g.act('adv3');
+  assert.equal(g.S.t,3);
+  g.S=g.load();
+  g.renderModal();
+  assert.match(e.get('#modal').innerHTML,/期末信用分 .*61\.7<\/b>（\+1\.7）/);
+  const receipt=g.S.queue[0].r;
+  delete receipt.rep0;
+  delete receipt.rep1;
+  g.S=g.prepareState(g.S);
+  g.renderModal();
+  assert.match(e.get('#modal').innerHTML,/期末现金/);
+  assert.doesNotMatch(e.get('#modal').innerHTML,/期末信用分/);
 });
 
 test('the displayed credit does not round into an unmet landmark tender requirement',()=>{
